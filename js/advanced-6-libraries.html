@@ -15,7 +15,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="../index.html">返回首页</a></li>
-                <li><a href="libraries-bestpractices.html">下一章</a></li>
+                <li><a href="advanced-7-bestpractices.html">下一章</a></li>
             </ul>
         </nav>
     </header>
@@ -25,7 +25,7 @@
             <a href="../index.html">首页</a> &gt; 进阶教程 &gt; 常用准标准库
         </div>
 
-        <h1>常用准标准库 </h1>
+        <h1>常用准标准库</h1>
 
         <div class="section">
             <h2>什么是准标准库?</h2>
@@ -33,10 +33,353 @@
         </div>
 
         <div class="section">
+            <h2>Fetch API - 现代网络请求</h2>
+            <p>Fetch API 是现代浏览器提供的原生网络请求接口，Promise-based，简洁强大。</p>
+
+            <div class="code-block">
+<pre><code>// 基本 GET 请求
+async function getData() {
+    try {
+        const response = await fetch('/api/users');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+    }
+}
+
+// POST 请求
+async function postData(url, data) {
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    return response.json();
+}
+
+// PUT 请求
+async function updateData(url, data) {
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    return response.json();
+}
+
+// DELETE 请求
+async function deleteData(url) {
+    const response = await fetch(url, {
+        method: 'DELETE',
+    });
+    return response.status === 204;
+}</code></pre>
+            </div>
+
+            <h3>Fetch 高级用法</h3>
+            <div class="code-block">
+<pre><code>// 添加查询参数
+function fetchWithParams(url, params) {
+    const queryString = new URLSearchParams(params).toString();
+    const fullUrl = queryString ? `${url}?${queryString}` : url;
+    return fetch(fullUrl);
+}
+
+// 使用示例
+fetchWithParams('/api/users', { page: 1, limit: 10 });
+
+// 设置超时
+function fetchWithTimeout(url, options = {}, timeout = 5000) {
+    return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Request timeout')), timeout)
+        )
+    ]);
+}
+
+// 使用示例
+try {
+    const data = await fetchWithTimeout('/api/data', {}, 3000);
+} catch (error) {
+    console.error('请求超时:', error);
+}
+
+// 请求取消 (AbortController)
+function fetchWithCancel(url) {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const promise = fetch(url, { signal });
+    return {
+        promise,
+        cancel: () => controller.abort()
+    };
+}
+
+// 使用示例
+const { promise, cancel } = fetchWithCancel('/api/data');
+setTimeout(() => cancel(), 1000); // 1秒后取消</code></pre>
+            </div>
+
+            <h3>Fetch 最佳实践</h3>
+            <div class="code-block">
+<pre><code>// 封装 Fetch API
+class ApiClient {
+    constructor(baseURL, options = {}) {
+        this.baseURL = baseURL;
+        this.defaultOptions = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            ...options
+        };
+    }
+
+    async request(endpoint, options = {}) {
+        const url = `${this.baseURL}${endpoint}`;
+        const config = { ...this.defaultOptions, ...options };
+
+        try {
+            const response = await fetch(url, config);
+
+            if (!response.ok) {
+                const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                error.status = response.status;
+                throw error;
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            }
+            return response.text();
+        } catch (error) {
+            console.error('API request failed:', error);
+            throw error;
+        }
+    }
+
+    get(endpoint, params = {}) {
+        const queryString = new URLSearchParams(params).toString();
+        const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+        return this.request(url, { method: 'GET' });
+    }
+
+    post(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+
+    put(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
+    delete(endpoint) {
+        return this.request(endpoint, { method: 'DELETE' });
+    }
+}
+
+// 使用示例
+const api = new ApiClient('https://api.example.com');
+
+const users = await api.get('/users');
+const user = await api.get('/users/1');
+const newUser = await api.post('/users', { name: '张三' });
+const updatedUser = await api.put('/users/1', { name: '李四' });
+await api.delete('/users/1');</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Axios - HTTP 客户端</h2>
+            <p>Axios 是基于 Promise 的 HTTP 客户端，支持浏览器和 Node.js，功能比 Fetch 更丰富。</p>
+
+            <div class="code-block">
+<pre><code>// 安装
+npm install axios
+
+// 基本使用
+import axios from 'axios';
+
+// GET 请求
+axios.get('/api/users')
+    .then(response => console.log(response.data))
+    .catch(error => console.error(error));
+
+// POST 请求
+axios.post('/api/users', {
+    name: '张三',
+    email: 'zhangsan@example.com'
+})
+.then(response => console.log(response.data));
+
+// PUT 请求
+axios.put('/api/users/1', { name: '李四' });
+
+// DELETE 请求
+axios.delete('/api/users/1');</code></pre>
+            </div>
+
+            <h3>Axios 高级功能</h3>
+            <div class="code-block">
+<pre><code>// 并发请求
+function getMultipleData() {
+    return axios.all([
+        axios.get('/api/users'),
+        axios.get('/api/posts'),
+        axios.get('/api/comments')
+    ]).then(axios.spread((users, posts, comments) => {
+        return { users: users.data, posts: posts.data, comments: comments.data };
+    }));
+}
+
+// 请求拦截器
+axios.interceptors.request.use(
+    config => {
+        // 在发送请求之前做些什么
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    error => {
+        // 对请求错误做些什么
+        return Promise.reject(error);
+    }
+);
+
+// 响应拦截器
+axios.interceptors.response.use(
+    response => {
+        // 对响应数据做点什么
+        return response;
+    },
+    error => {
+        // 对响应错误做点什么
+        if (error.response?.status === 401) {
+            // 处理未授权
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
+// 超时设置
+axios.get('/api/data', { timeout: 5000 });
+
+// 取消请求
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
+axios.get('/api/data', {
+    cancelToken: source.token
+});
+
+source.cancel('Operation canceled by the user.');</code></pre>
+            </div>
+
+            <h3>Axios 实例封装</h3>
+            <div class="code-block">
+<pre><code>// 创建 Axios 实例
+const api = axios.create({
+    baseURL: 'https://api.example.com',
+    timeout: 10000,
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Custom-Header': 'value'
+    }
+});
+
+// 请求拦截器
+api.interceptors.request.use(
+    config => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    }
+);
+
+// 响应拦截器
+api.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response?.status === 401) {
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
+// 封装 API 方法
+export const userApi = {
+    getUsers: (params) => api.get('/users', { params }),
+    getUser: (id) => api.get(`/users/${id}`),
+    createUser: (data) => api.post('/users', data),
+    updateUser: (id, data) => api.put(`/users/${id}`, data),
+    deleteUser: (id) => api.delete(`/users/${id}`)
+};
+
+// 使用
+import { userApi } from './api';
+
+const users = await userApi.getUsers({ page: 1, limit: 10 });
+const user = await userApi.getUser(1);
+await userApi.deleteUser(1);</code></pre>
+            </div>
+
+            <h3>Fetch vs Axios</h3>
+            <div class="code-block">
+<pre><code>// Fetch - 原生，轻量
+// ✅ 浏览器原生支持
+// ✅ 无需额外依赖
+// ❌ 需要手动处理很多细节
+// ❌ 不支持请求取消 (需要 AbortController)
+// ❌ 不支持请求/响应拦截器
+
+fetch('/api/users')
+    .then(response => {
+        if (!response.ok) throw new Error('Error');
+        return response.json();
+    })
+    .then(data => console.log(data));
+
+// Axios - 功能丰富
+// ✅ 自动 JSON 转换
+// ✅ 请求/响应拦截器
+// ✅ 请求取消
+// ✅ 自动超时
+// ✅ 更好的错误处理
+// ✅ 并发请求支持
+// ❌ 需要额外依赖 (~13KB)
+
+axios.get('/api/users')
+    .then(response => console.log(response.data))
+    .catch(error => console.error(error));</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
             <h2>Lodash - JavaScript 实用工具库</h2>
             <p>Lodash 是最受欢迎的 JavaScript 实用工具库，提供了模块化、高性能的工具函数。</p>
 
-            <h3>核心功能</h3>
             <div class="code-block">
 <pre><code>// 数组操作
 import { chunk, uniq, sortBy } from 'lodash';
@@ -71,6 +414,43 @@ const throttledScroll = throttle(() => {
 const expensive = memoize((n) => {
     return complexCalculation(n);
 });</code></pre>
+            </div>
+
+            <h3>Lodash 深入使用</h3>
+            <div class="code-block">
+<pre><code>// 深度克隆
+import { cloneDeep, merge } from 'lodash';
+
+const original = {
+    name: '张三',
+    profile: {
+        age: 25,
+        address: { city: '北京' }
+    }
+};
+
+const cloned = cloneDeep(original);
+cloned.profile.address.city = '上海';
+console.log(original.profile.address.city); // '北京' (原对象不变)
+
+// 深度合并
+const defaults = {
+    theme: 'light',
+    language: 'en',
+    features: {
+        notifications: true
+    }
+};
+
+const options = {
+    language: 'zh',
+    features: {
+        darkMode: true
+    }
+};
+
+const merged = merge({}, defaults, options);
+// { theme: 'light', language: 'zh', features: { notifications: true, darkMode: true } }</code></pre>
             </div>
         </div>
 
@@ -109,300 +489,213 @@ console.log(date.locale('zh-cn').format('YYYY年MM月DD日')); // 中文</code><
         </div>
 
         <div class="section">
-            <h2>clsx / classnames - CSS 类名处理</h2>
-            <p>动态构建 CSS 类名字符串的工具库，特别适用于 React/Vue 等框架。</p>
+            <h2>date-fns - 现代日期库</h2>
+            <p>date-fns 是现代 JavaScript 日期处理库，模块化、不可变、Tree-shakable。</p>
 
             <div class="code-block">
-<pre><code>import clsx from 'clsx';
-import { twMerge } from 'tailwind-merge';
+<pre><code>// 安装
+npm install date-fns
 
 // 基本使用
-const className = clsx('foo', 'bar', 'baz');
-// 'foo bar baz'
+import {
+    format,
+    addDays,
+    subDays,
+    differenceInDays,
+    isAfter,
+    isBefore,
+    startOfDay,
+    endOfDay,
+    eachDayOfInterval,
+    parseISO
+} from 'date-fns';
 
-// 条件类名
-const className = clsx({
-    active: isActive,
-    disabled: isDisabled,
-    hidden: isHidden
-});
+const now = new Date();
 
-// 数组和对象
-const className = clsx('base-class', {
-    'modifier-a': conditionA,
-    'modifier-b': conditionB
-}, 'another-class');
+// 格式化日期
+console.log(format(now, 'yyyy-MM-dd')); // '2024-01-26'
+console.log(format(now, 'yyyy年MM月dd日')); // '2024年01月26日'
+console.log(format(now, 'yyyy-MM-dd HH:mm:ss')); // '2024-01-26 15:30:00'
 
-// 与 Tailwind CSS 结合使用 (推荐 twMerge)
-const className = twMerge(
-    clsx('px-4 py-2', {
-        'bg-blue-500': isPrimary,
-        'bg-gray-500': !isPrimary
-    }),
-    existingClassName // 自动处理冲突
-);</code></pre>
+// 日期操作
+const tomorrow = addDays(now, 1);
+const yesterday = subDays(now, 1);
+const nextWeek = addDays(now, 7);
+
+// 日期比较
+const date1 = new Date('2024-01-01');
+const date2 = new Date('2024-01-26');
+
+console.log(isAfter(date2, date1)); // true
+console.log(isBefore(date1, date2)); // true
+
+// 日期差
+const daysDiff = differenceInDays(date2, date1); // 25</code></pre>
             </div>
-        </div>
 
-        <div class="section">
-            <h2>Zod - 运行时类型验证</h2>
-            <p>Zod 是 TypeScript-first 的模式声明和验证库，可以无缝集成到 TypeScript。</p>
-
+            <h3>date-fns 高级用法</h3>
             <div class="code-block">
-<pre><code>import { z } from 'zod';
+<pre><code>// 时区处理 (需要额外安装)
+import { zonedTimeToUtc, utcToZonedTime, format } from 'date-fns-tz';
+import 'date-fns-tz/locale/zh-CN';
 
-// 定义模式
-const UserSchema = z.object({
-    name: z.string().min(2).max(50),
-    age: z.number().min(0).max(150),
-    email: z.string().email(),
-    role: z.enum(['admin', 'user', 'guest']),
-    preferences: z.object({
-        notifications: z.boolean(),
-        theme: z.enum(['light', 'dark', 'auto'])
-    }).optional()
-});
+const timeZone = 'Asia/Shanghai';
+const now = new Date();
 
-// 推断 TypeScript 类型
-type User = z.infer<typeof UserSchema>;
+// UTC 转换为时区
+const zonedDate = utcToZonedTime(now, timeZone);
 
-// 验证数据
-try {
-    const result = UserSchema.parse({
-        name: '张三',
-        age: 25,
-        email: 'test@example.com',
-        role: 'user'
-    });
-    console.log('验证成功:', result);
-} catch (error) {
-    console.error('验证失败:', error.errors);
+// 格式化时区日期
+console.log(format(zonedDate, 'yyyy-MM-dd HH:mm:ss', { timeZone }));
+
+// 国际化 (i18n)
+import { format, zhCN } from 'date-fns/locale';
+import { differenceInDays } from 'date-fns';
+
+console.log(format(now, 'PPP', { locale: zhCN })); // '2024年1月26日'
+
+// 相对时间
+import { formatDistanceToNow, formatDistance } from 'date-fns';
+
+const pastDate = new Date('2024-01-20');
+console.log(formatDistanceToNow(pastDate, { locale: zhCN })); // '大约6天前'
+
+// 日期解析
+import { parse, parseISO, isValid } from 'date-fns';
+
+const parsedDate = parse('2024-01-26', 'yyyy-MM-dd', new Date());
+const isoDate = parseISO('2024-01-26T15:30:00');
+
+if (isValid(parsedDate)) {
+    console.log('日期有效');
 }
 
-// 安全解析 (不抛出异常)
-const result = UserSchema.safeParse(inputData);
-if (result.success) {
-    console.log(result.data);
-} else {
-    console.log(result.error);
-}
+// 业务日历
+import {
+    isWeekend,
+    isMonday,
+    isFriday,
+    getWeek,
+    getMonth,
+    getYear,
+    startOfMonth,
+    endOfMonth
+} from 'date-fns';
 
-// API 响应验证
-const APIResponseSchema = z.object({
-    success: z.boolean(),
-    data: z.array(UserSchema),
-    pagination: z.object({
-        total: z.number(),
-        page: z.number()
-    })
-});</code></pre>
+console.log(isWeekend(now)); // 是否周末
+console.log(isMonday(now)); // 是否周一
+console.log(getWeek(now)); // 周数
+console.log(startOfMonth(now)); // 月初
+console.log(endOfMonth(now)); // 月末</code></pre>
+            </div>
+
+            <h3>date-fns vs Day.js</h3>
+            <div class="code-block">
+<pre><code>// Day.js - 简单易用，类似 Moment.js
+import dayjs from 'dayjs';
+
+// 链式调用
+const result = dayjs()
+    .add(1, 'day')
+    .subtract(1, 'month')
+    .format('YYYY-MM-DD');
+
+// ✅ API 简洁，易于理解
+// ✅ 体积小 (~2KB)
+// ✅ 链式调用
+// ❌ 不是模块化的
+
+// date-fns - 模块化，函数式
+import { format, addDays, subMonths } from 'date-fns';
+
+// 函数式调用
+const result2 = format(
+    subMonths(addDays(new Date(), 1), 1),
+    'yyyy-MM-dd'
+);
+
+// ✅ 完全模块化
+// ✅ 函数式，可组合
+// ✅ 不可变
+// ✅ Tree-shakable
+// ❌ API 相对复杂
+// ❌ 需要多个 import</code></pre>
             </div>
         </div>
 
         <div class="section">
-            <h2>Dexie.js - IndexedDB 封装</h2>
-            <p>Dexie.js 是 IndexedDB 的简洁封装，让浏览器数据库操作变得简单。</p>
+            <h2>Zepto - 轻量级 jQuery 替代</h2>
+            <p>Zepto 是轻量级的现代浏览器库，API 与 jQuery 兼容，但体积更小 (~10KB)。</p>
 
             <div class="code-block">
-<pre><code>import Dexie from 'dexie';
+<pre><code>// 安装
+npm install zepto
 
-// 定义数据库
-const db = new Dexie('MyDatabase');
-db.version(1).stores({
-    todos: '++id, text, completed, date',
-    users: '++id, &email, name',
-    posts: '++id, userId, title, date'
+// 基本 DOM 操作
+import $ from 'zepto';
+
+// 选择元素
+const $header = $('header');
+const $items = $('.item');
+
+// 修改内容
+$('<p>新段落</p>').appendTo('#container');
+$('.content').html('<h1>标题</h1>');
+$('.title').text('新标题');
+
+// 样式操作
+$('.box').css('background', 'red');
+$('.box').addClass('active');
+$('.box').removeClass('inactive');
+$('.box').toggleClass('highlight');
+
+// 事件处理
+$('.button').on('click', function() {
+    console.log('按钮被点击');
 });
 
-// 添加数据
-await db.todos.add({
-    text: '学习 JavaScript',
-    completed: false,
-    date: new Date()
+$('.input').on('input', function(e) {
+    console.log(e.target.value);
 });
 
-// 查询数据
-const allTodos = await db.todos.toArray();
-const activeTodos = await db.todos
-    .where('completed')
-    .equals(false)
-    .toArray();
-
-// 分页查询
-const page = await db.todos
-    .where('date')
-    .below(new Date())
-    .reverse()
-    .offset(0)
-    .limit(10)
-    .toArray();
-
-// 更新数据
-await db.todos.update(id, { completed: true });
-
-// 删除数据
-await db.todos.delete(id);
-await db.todos.where('completed').equals(true).delete();
-
-// 批量操作
-await db.transaction('rw', db.todos, db.users, async () => {
-    await db.todos.bulkAdd(todos);
-    await db.todos.where('completed').equals(true).modify({ archived: true });
-});</code></pre>
+// 动画
+$('.box').animate({
+    left: '100px',
+    opacity: 0.5
+}, 300);</code></pre>
             </div>
-        </div>
 
-        <div class="section">
-            <h2>Nanoid - 唯一 ID 生成</h2>
-            <p>Nanoid 是一个更小、更安全、更友好的唯一字符串 ID 生成器。</p>
-
+            <h3>Zepto vs jQuery</h3>
             <div class="code-block">
-<pre><code>import { nanoid } from 'nanoid';
+<pre><code>// jQuery - 功能丰富，但体积大 (~34KB)
+// ✅ 功能全面
+// ✅ 广泛使用
+// ✅ 文档完善
+// ❌ 体积大
+// ❌ 性能相对较低
 
-// 默认 21 字符 ID
-const id = nanoid(); // 'V1StGXR8_Z5jdHi6B-myT'
+// Zepto - 轻量级，现代浏览器
+// ✅ 体积小 (~10KB)
+// ✅ 性能好
+// ✅ API 与 jQuery 兼容
+// ✅ 移动端友好
+// ❌ 不支持 IE
+// ❌ 功能相对较少
 
-// 自定义长度
-const shortId = nanoid(10); // 'IRLo-Vl1dQ'
-
-// 自定义字母表
-const customId = nanoid(12, '0123456789ABCDEF');
-
-// URL 安全
-const urlId = nanoid(); // 自动使用 URL 安全字符
-
-// 比较优势
-// UUID: '550e8400-e29b-41d4-a716-446655440000' (36 字符)
-// NanoID: 'V1StGXR8_Z5jdHi6B-myT' (21 字符)
-// 更短、更快、更安全
-
-// 使用场景
-const todoId = nanoid();
-const fileId = nanoid(16);
-const sessionToken = nanoid(32);</code></pre>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Turndown - HTML 转 Markdown</h2>
-            <p>Turndown 是一个将 HTML 转换为 Markdown 的工具库。</p>
-
-            <div class="code-block">
-<pre><code>import TurndownService from 'turndown';
-
-const turndownService = new TurndownService();
-
-// 基本转换
-const markdown = turndownService.turndown(`
-    <h1>标题</h1>
-    <p>这是一段<strong>加粗</strong>文本</p>
-    <ul>
-        <li>列表项 1</li>
-        <li>列表项 2</li>
-    </ul>
-`);
-
-// 结果:
-// # 标题
-// 这是一段**加粗**文本
-// * 列表项 1
-// * 列表项 2
-
-// 自定义规则
-turndownService.addRule('strikethrough', {
-    filter: ['s', 'del'],
-    replacement: (content) => `~~${content}~~`
-});
-
-turndownService.addRule('highlight', {
-    filter: (node, options) => {
-        return node.nodeName === 'SPAN' && node.hasAttribute('data-highlight');
-    },
-    replacement: (content, node) => `==${content}==`
-});</code></pre>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>DOMPurify - XSS 防护</h2>
-            <p>DOMPurify 是一个快速的、只针对 XSS 的 DOM-only 清理器。</p>
-
-            <div class="code-block">
-<pre><code>import DOMPurify from 'dompurify';
-
-// 基本使用
-const dirty = '&lt;img src=x onerror=alert(1)//&gt;';
-const clean = DOMPurify.sanitize(dirty);
-// 结果: '&lt;img src=x&gt;'
-
-// 允许特定标签
-const clean = DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: ['p', 'b', 'i', 'u', 'strong', 'em', 'a'],
-    ALLOWED_ATTR: ['href', 'title', 'target']
-});
-
-// 清理 HTML 片段
-const cleanHTML = DOMPurify.sanitize(userInputHTML);
-
-// 使用钩子
-DOMPurify.addHook('uponSanitizeAttribute', (node, data) => {
-    // 自定义属性处理逻辑
-    if (data.attrName === 'target') {
-        data.attrValue = '_blank';
-    }
-});
-
-// 实际应用示例
-function renderUserContent(content) {
-    return DOMPurify.sanitize(content, {
-        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'a', 'ul', 'ol', 'li'],
-        ALLOWED_ATTR: ['href', 'target'],
-        ALLOW_DATA_ATTR: false
-    });
-}</code></pre>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Copy-to-clipboard - 剪贴板操作</h2>
-            <p>现代剪贴板 API 的简单封装。</p>
-
-            <div class="code-block">
-<pre><code>import { clipboard } from '@nolebase/vitepress-plugin-inline-copy-to-clipboard';
-
-// 复制文本
-async function copyToClipboard(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-        console.log('复制成功!');
-    } catch (err) {
-        console.error('复制失败:', err);
-        // 降级方案
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-    }
-}
-
-// 现代浏览器内置 API (推荐)
-async function copyText(text) {
-    await navigator.clipboard.writeText(text);
-}
-
-async function pasteText() {
-    const text = await navigator.clipboard.readText();
-    return text;
-}</code></pre>
+// 选择合适的库
+// - 老项目、需要 IE 支持: jQuery
+// - 现代浏览器、移动端: Zepto 或 原生 API
+// - 新项目: 推荐使用原生 API 或框架</code></pre>
             </div>
         </div>
 
         <div class="section">
             <h2>选择合适的库</h2>
-            <p>选择库的原则:</p>
             <ul>
+                <li><strong>网络请求</strong> - Axios (功能丰富) 或 Fetch (原生)</li>
+                <li><strong>日期处理</strong> - Day.js (简单) 或 date-fns (模块化)</li>
+                <li><strong>工具函数</strong> - Lodash (功能丰富)</li>
+                <li><strong>DOM 操作</strong> - Zepto (兼容 jQuery) 或 原生 API</li>
                 <li><strong>优先使用浏览器原生 API</strong> - 如 URLSearchParams、Blob、File API</li>
                 <li><strong>选择轻量级库</strong> - 如 Day.js (2KB) 而不是 Moment.js (67KB)</li>
                 <li><strong>考虑 Tree-shaking</strong> - 选择支持 ES Module 的库</li>
@@ -414,7 +707,7 @@ async function pasteText() {
 
         <div class="navigation">
             <a href="../index.html" class="nav-button prev">← 返回首页</a>
-            <a href="libraries-bestpractices.html" class="nav-button next">下一章: 最佳实践 →</a>
+            <a href="advanced-7-bestpractices.html" class="nav-button next">下一章: 最佳实践 →</a>
         </div>
     </main>
 
