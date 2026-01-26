@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据可视化与 Charts - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+                <li><a href="advanced-8-patterns.html">上一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 进阶教程 &gt; 数据可视化与 Charts
+        </div>
+
+        <h1>数据可视化与 Charts</h1>
+
+        <div class="section">
+            <h2>为什么需要数据可视化?</h2>
+            <p>数据可视化是将数据转换为图形表示的过程，帮助用户更直观地理解和分析数据。在现代 Web 应用中，图表是展示数据的重要方式。</p>
+
+            <ul>
+                <li>📊 直观展示数据趋势</li>
+                <li>📈 快速发现数据模式</li>
+                <li>🎯 提升用户体验</li>
+                <li>💡 支持数据驱动决策</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Chart.js 简介</h2>
+            <p>Chart.js 是最流行的 JavaScript 图表库之一，简单易用，支持多种图表类型。</p>
+
+            <ul>
+                <li>✅ 轻量级 (~200KB)</li>
+                <li>✅ 响应式设计</li>
+                <li>✅ 动画效果</li>
+                <li>✅ 支持多种图表类型</li>
+                <li>✅ 高度可定制</li>
+                <li>✅ 良好的 TypeScript 支持</li>
+            </ul>
+
+            <div class="code-block">
+<pre><code>// 安装
+npm install chart.js
+
+// 或使用 CDN
+&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>基本使用</h2>
+            <div class="code-block">
+<pre><code>// HTML
+&lt;canvas id="myChart"&gt;&lt;/canvas&gt;
+
+// JavaScript
+const ctx = document.getElementById('myChart').getContext('2d');
+
+const myChart = new Chart(ctx, {
+    type: 'bar', // 图表类型
+    data: {
+        labels: ['一月', '二月', '三月', '四月', '五月', '六月'],
+        datasets: [{
+            label: '销售额',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>图表类型</h2>
+
+            <h3>1. 柱状图</h3>
+            <div class="code-block">
+<pre><code>new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['A', 'B', 'C', 'D'],
+        datasets: [{
+            label: '数据集 1',
+            data: [10, 20, 15, 25],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)'
+            ],
+            borderWidth: 1
+        }]
+    }
+});</code></pre>
+            </div>
+
+            <h3>2. 折线图</h3>
+            <div class="code-block">
+<pre><code>new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['1月', '2月', '3月', '4月', '5月'],
+        datasets: [{
+            label: '趋势',
+            data: [65, 59, 80, 81, 56],
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1 // 曲线平滑度
+        }]
+    },
+    options: {
+        elements: {
+            line: {
+                tension: 0.4
+            }
+        }
+    }
+});</code></pre>
+            </div>
+
+            <h3>3. 饼图</h3>
+            <div class="code-block">
+<pre><code>new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['红色', '蓝色', '黄色'],
+        datasets: [{
+            data: [300, 50, 100],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+    }
+});</code></pre>
+            </div>
+
+            <h3>4. 环形图</h3>
+            <div class="code-block">
+<pre><code>new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['类别 A', '类别 B', '类别 C'],
+        datasets: [{
+            data: [10, 20, 30],
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56'
+            ],
+            hoverOffset: 4
+        }]
+    },
+    options: {
+        cutout: '50%' // 中心圆大小
+    }
+});</code></pre>
+            </div>
+
+            <h3>5. 极坐标图</h3>
+            <div class="code-block">
+<pre><code>new Chart(ctx, {
+    type: 'polarArea',
+    data: {
+        labels: ['红色', '蓝色', '黄色', '绿色', '橙色'],
+        datasets: [{
+            data: [11, 16, 7, 3, 14],
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(75, 192, 192)',
+                'rgb(255, 205, 86)',
+                'rgb(201, 203, 207)',
+                'rgb(54, 162, 235)'
+            ]
+        }]
+    }
+});</code></pre>
+            </div>
+
+            <h3>6. 雷达图</h3>
+            <div class="code-block">
+<pre><code>new Chart(ctx, {
+    type: 'radar',
+    data: {
+        labels: ['速度', '力量', '耐力', '技巧', '智力'],
+        datasets: [{
+            label: '运动员 A',
+            data: [85, 90, 75, 80, 85],
+            fill: true,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgb(255, 99, 132)',
+            pointBackgroundColor: 'rgb(255, 99, 132)'
+        }, {
+            label: '运动员 B',
+            data: [90, 85, 80, 90, 75],
+            fill: true,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgb(54, 162, 235)',
+            pointBackgroundColor: 'rgb(54, 162, 235)'
+        }]
+    }
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>高级配置</h2>
+
+            <h3>多数据集</h3>
+            <div class="code-block">
+<pre><code>const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['1月', '2月', '3月', '4月', '5月'],
+        datasets: [{
+            label: '2023',
+            data: [65, 59, 80, 81, 56],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)'
+        }, {
+            label: '2024',
+            data: [28, 48, 40, 19, 86],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)'
+        }]
+    }
+});</code></pre>
+            </div>
+
+            <h3>自定义工具提示</h3>
+            <div class="code-block">
+<pre><code>const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: { /* ... */ },
+    options: {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.dataset.label || '';
+                        const value = context.parsed.y;
+                        const total = context.chart.data.datasets.reduce((acc, ds) => {
+                            return acc + ds.data[context.dataIndex];
+                        }, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+
+                        return `${label}: ${value} (${percentage}%)`;
+                    }
+                }
+            }
+        }
+    }
+});</code></pre>
+            </div>
+
+            <h3>响应式配置</h3>
+            <div class="code-block">
+<pre><code>const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: { /* ... */ },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    font: {
+                        size: 14
+                    }
+                }
+            }
+        }
+    }
+});</code></pre>
+            </div>
+
+            <h3>自定义颜色</h3>
+            <div class="code-block">
+<pre><code>// 动态生成颜色
+function generateColors(count) {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+        const hue = (i * 360 / count) % 360;
+        colors.push(`hsl(${hue}, 70%, 60%)`);
+    }
+    return colors;
+}
+
+const myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['A', 'B', 'C', 'D', 'E'],
+        datasets: [{
+            data: [10, 20, 30, 40, 50],
+            backgroundColor: generateColors(5)
+        }]
+    }
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>动态更新图表</h2>
+            <div class="code-block">
+<pre><code>// 添加数据
+function addData(chart, label, data) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(data);
+    });
+    chart.update();
+}
+
+// 删除数据
+function removeData(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+    });
+    chart.update();
+}
+
+// 更新特定数据点
+function updateData(chart, index, newValue) {
+    chart.data.datasets[0].data[index] = newValue;
+    chart.update();
+}
+
+// 替换所有数据
+function replaceData(chart, newData) {
+    chart.data.datasets[0].data = newData;
+    chart.update();
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>最佳实践</h2>
+
+            <h3>1. 性能优化</h3>
+            <div class="code-block">
+<pre><code>// 禁用动画提高性能
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: { /* ... */ },
+    options: {
+        animation: {
+            duration: 0 // 禁用动画
+        },
+        interaction: {
+            mode: 'index',
+            intersect: false
+        }
+    }
+});
+
+// 大数据集优化
+const myChart = new Chart(ctx, {
+    type: 'line',
+    data: { /* 大量数据 */ },
+    options: {
+        parsing: {
+            xAxisKey: 'x',
+            yAxisKey: 'y'
+        },
+        plugins: {
+            decimation: {
+                enabled: true,
+                algorithm: 'lttb'
+            }
+        }
+    }
+});</code></pre>
+            </div>
+
+            <h3>2. 可访问性</h3>
+            <div class="code-block">
+<pre><code>// 添加可访问性描述
+&lt;canvas id="myChart" role="img" aria-label="销售数据图表"&gt;&lt;/canvas&gt;
+
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: { /* ... */ },
+    options: {
+        plugins: {
+            accessible: {
+                enabled: true,
+                title: '2024年销售数据',
+                description: '显示各月份销售额的柱状图'
+            }
+        }
+    }
+});</code></pre>
+            </div>
+
+            <h3>3. 主题切换</h3>
+            <div class="code-block">
+<pre><code>// 亮色主题
+const lightTheme = {
+    color: '#666',
+    grid: {
+        color: '#e0e0e0'
+    },
+    ticks: {
+        color: '#666'
+    }
+};
+
+// 暗色主题
+const darkTheme = {
+    color: '#fff',
+    grid: {
+        color: '#333'
+    },
+    ticks: {
+        color: '#fff'
+    }
+};
+
+// 应用主题
+function applyTheme(chart, theme) {
+    chart.options.scales.x = theme;
+    chart.options.scales.y = theme;
+    chart.update();
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>实战示例</h2>
+
+            <h3>实时数据更新</h3>
+            <div class="code-block">
+<pre><code>// 创建实时更新的图表
+const ctx = document.getElementById('realtimeChart');
+const realtimeChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: '实时数据',
+            data: [],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        animation: {
+            duration: 0
+        },
+        scales: {
+            x: {
+                display: false
+            }
+        }
+    }
+});
+
+// 每秒添加新数据
+setInterval(() => {
+    const now = new Date();
+    const value = Math.random() * 100;
+
+    realtimeChart.data.labels.push(now.toLocaleTimeString());
+    realtimeChart.data.datasets[0].data.push(value);
+
+    // 只保留最近 20 个数据点
+    if (realtimeChart.data.labels.length > 20) {
+        realtimeChart.data.labels.shift();
+        realtimeChart.data.datasets[0].data.shift();
+    }
+
+    realtimeChart.update();
+}, 1000);</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>其他图表库</h2>
+
+            <h3>ECharts</h3>
+            <p>百度的 ECharts 功能强大，适合复杂可视化需求。</p>
+
+            <div class="code-block">
+<pre><code>// 安装
+npm install echarts
+
+// 基本使用
+import * as echarts from 'echarts';
+
+const chart = echarts.init(document.getElementById('chart'));
+const option = {
+    title: { text: '示例图表' },
+    tooltip: {},
+    xAxis: { data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子'] },
+    yAxis: {},
+    series: [{
+        name: '销量',
+        type: 'bar',
+        data: [5, 20, 36, 10, 10, 20]
+    }]
+};
+chart.setOption(option);</code></pre>
+            </div>
+
+            <h3>Recharts (React)</h3>
+            <p>React 生态中流行的图表库，声明式 API。</p>
+
+            <div class="code-block">
+<pre><code>// 安装
+npm install recharts
+
+// 使用
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+
+const data = [
+    { name: 'Page A', uv: 4000, pv: 2400 },
+    { name: 'Page B', uv: 3000, pv: 1398 },
+];
+
+function MyChart() {
+    return (
+        &lt;BarChart width={600} height={300} data={data}&gt;
+            &lt;XAxis dataKey="name" /&gt;
+            &lt;YAxis /&gt;
+            &lt;Tooltip /&gt;
+            &lt;Legend /&gt;
+            &lt;Bar dataKey="uv" fill="#8884d8" /&gt;
+            &lt;Bar dataKey="pv" fill="#82ca9d" /&gt;
+        &lt;/BarChart&gt;
+    );
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>选择合适的图表库</h2>
+            <ul>
+                <li><strong>Chart.js</strong> - 简单易用，适合大多数场景</li>
+                <li><strong>ECharts</strong> - 功能强大，适合复杂可视化</li>
+                <li><strong>Recharts</strong> - React 项目首选</li>
+                <li><strong>D3.js</strong> - 完全自定义，适合高级用户</li>
+                <li><strong>Chart.js + React-Chartjs-2</strong> - React 集成 Chart.js</li>
+            </ul>
+        </div>
+
+        <div class="navigation">
+            <a href="advanced-8-patterns.html" class="nav-button prev">← 上一章: 设计模式和代码模式</a>
+            <a href="../index.html" class="nav-button next">返回首页 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

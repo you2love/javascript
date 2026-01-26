@@ -1,4 +1,4 @@
-# JavaScript 学习网站 (2026版)
+# JavaScript 学习网站 
 
 这是一个完整的 JavaScript 学习网站项目，采用2026年最新的 JavaScript 知识和技术实践，适合初学者和进阶开发者。
 
@@ -13,32 +13,34 @@ js-tutorial/
 │   └── examples.css                # 示例页面样式
 ├── js/
 │   ├── main.js                     # 主页 JavaScript
-│   ├── tutorial-1-intro.html       # 第1章: JavaScript 简介 (2026版)
-│   ├── tutorial-2-variables.html    # 第2章: 变量和数据类型 (2026版)
+│   ├── tutorial-1-intro.html       # 第1章: JavaScript 简介 
+│   ├── tutorial-2-variables.html    # 第2章: 变量和数据类型 
 │   ├── tutorial-3-functions.html   # 第3章: 函数
 │   ├── tutorial-4-arrays-objects.html # 第4章: 数组和对象
 │   ├── tutorial-5-conditions.html  # 第5章: 条件语句
 │   ├── tutorial-6-loops.html       # 第6章: 循环语句
 │   ├── advanced-1-dom.html         # 进阶: DOM 操作
 │   ├── advanced-2-events.html      # 进阶: 事件处理
-│   ├── advanced-3-es6.html         # 进阶: ES6+ 新特性 (2026完整版)
+│   ├── advanced-3-es6.html         # 进阶: ES6+ 新特性 
 │   ├── advanced-4-async.html       # 进阶: 异步编程与 Promise
 │   ├── advanced-5-typescript.html   # 进阶: TypeScript 基础
 │   ├── advanced-6-libraries.html    # 进阶: 常用准标准库
 │   ├── advanced-7-bestpractices.html # 进阶: 最佳实践
-│   └── advanced-8-patterns.html    # 进阶: 设计模式和代码模式
+│   ├── advanced-8-patterns.html    # 进阶: 设计模式和代码模式
+│   └── advanced-9-charts.html      # 进阶: 数据可视化与 Charts
 └── examples/
     ├── calculator.html              # 计算器示例 (ES6类实现)
     ├── todo.html                    # 待办事项示例 (现代化实现)
     ├── clock.html                   # 时钟示例
-    └── slideshow.html               # 图片轮播示例
+    ├── slideshow.html               # 图片轮播示例
+    └── charts.html                  # Chart.js 图表示例
 ```
 
 ## 功能特点
 
 ### 基础教程 (6章)
-1. **JavaScript 简介 (2026版)** - JavaScript 的现代生态、全栈能力、AI 集成
-2. **变量和数据类型 (2026版)** - const/let 最佳实践、解构、可选链、空值合并
+1. **JavaScript 简介 ** - JavaScript 的现代生态、全栈能力、AI 集成
+2. **变量和数据类型 ** - const/let 最佳实践、解构、可选链、空值合并
 3. **函数** - 箭头函数、参数、作用域、回调函数
 4. **数组和对象** - 数据结构、Map/Set、解构和展开
 5. **条件语句** - if-else、switch、逻辑运算符
@@ -47,18 +49,20 @@ js-tutorial/
 ### 进阶教程 (8章)
 1. **DOM 操作** - 操作页面元素
 2. **事件处理** - 处理用户交互事件
-3. **ES6+ 新特性 (2026版)** - 箭头函数、解构、模板字符串、类、私有字段、实用类型工具
+3. **ES6+ 新特性 ** - 箭头函数、解构、模板字符串、类、私有字段、实用类型工具
 4. **异步编程** - Promise、async/await、Promise 并发、AbortController
 5. **TypeScript 基础** - 类型系统、泛型、实用类型
 6. **常用准标准库** - Lodash、Day.js、Zod、Dexie、Nanoid等
 7. **最佳实践** - 代码质量、性能优化、安全性、测试
 8. **设计模式和代码模式** - 单例、工厂、观察者、策略、装饰器等
+9. **数据可视化与 Charts** - Chart.js、ECharts、图表类型、动态更新
 
-### 实战示例 (4个)
+### 实战示例 (5个)
 1. **计算器** - ES6 类实现，事件委托，键盘支持
 2. **待办事项** - 完整 Todo List，localStorage 持久化，crypto.randomUUID()
 3. **时钟显示** - 实时时钟，12/24小时制切换
 4. **图片轮播** - 自动轮播效果，支持手动切换和暂停
+5. **Chart.js 图表** - 6种图表类型，动态数据更新，交互式控制
 
 ## 技术特点
 

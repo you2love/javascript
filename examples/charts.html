@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图表示例 - JavaScript示例</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/examples.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-wrapper {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-wrapper h3 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .controls {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .controls h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .control-group button {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .control-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 示例</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="example-container">
+        <h1>Chart.js 图表示例</h1>
+        <p class="example-description">使用 Chart.js 创建各种类型的交互式图表</p>
+
+        <div class="controls">
+            <h3>动态控制</h3>
+            <div class="control-group">
+                <button onclick="addRandomData()">添加随机数据</button>
+                <button onclick="removeLastData()">删除最后一个数据</button>
+                <button onclick="randomizeData()">随机化数据</button>
+                <button onclick="toggleDataset()">切换数据集</button>
+                <button onclick="resetChart()">重置图表</button>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalValue">0</div>
+                    <div class="stat-label">总销售额</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="averageValue">0</div>
+                    <div class="stat-label">平均销售额</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="maxValue">0</div>
+                    <div class="stat-label">最高销售额</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <h3>柱状图</h3>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h3>折线图</h3>
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h3>饼图</h3>
+                <div class="chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h3>环形图</h3>
+                <div class="chart-container">
+                    <canvas id="doughnutChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h3>雷达图</h3>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h3>极坐标图</h3>
+                <div class="chart-container">
+                    <canvas id="polarAreaChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h2>核心代码</h2>
+            <div class="code-block">
+<pre><code>// 创建柱状图
+const barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['一月', '二月', '三月', '四月', '五月', '六月'],
+        datasets: [{
+            label: '销售额',
+            data: [65, 59, 80, 81, 56, 55],
+            backgroundColor: 'rgba(102, 126, 234, 0.6)',
+            borderColor: 'rgba(102, 126, 234, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            }
+        }
+    }
+});
+
+// 动态添加数据
+function addRandomData() {
+    const months = ['七月', '八月', '九月', '十月', '十一月', '十二月'];
+    const index = barChart.data.labels.length % months.length;
+    const label = months[index] || `月${barChart.data.labels.length + 1}`;
+    const value = Math.floor(Math.random() * 100);
+
+    barChart.data.labels.push(label);
+    barChart.data.datasets.forEach(dataset => {
+        dataset.data.push(value);
+    });
+    barChart.update();
+    updateStats();
+}</code></pre>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        // 初始化所有图表
+        const months = ['一月', '二月', '三月', '四月', '五月', '六月'];
+        const data1 = [65, 59, 80, 81, 56, 55];
+        const data2 = [28, 48, 40, 19, 86, 27];
+
+        // 颜色配置
+        const colors = {
+            primary: 'rgba(102, 126, 234, 0.6)',
+            primaryBorder: 'rgba(102, 126, 234, 1)',
+            secondary: 'rgba(118, 75, 162, 0.6)',
+            secondaryBorder: 'rgba(118, 75, 162, 1)',
+            multi: [
+                'rgba(255, 99, 132, 0.6)',
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 206, 86, 0.6)',
+                'rgba(75, 192, 192, 0.6)',
+                'rgba(153, 102, 255, 0.6)',
+                'rgba(255, 159, 64, 0.6)'
+            ],
+            multiBorder: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ]
+        };
+
+        // 柱状图
+        const barChart = new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: '销售额',
+                    data: data1,
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primaryBorder,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // 折线图
+        const lineChart = new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: '趋势',
+                    data: data1,
+                    fill: false,
+                    borderColor: colors.primaryBorder,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // 饼图
+        const pieChart = new Chart(document.getElementById('pieChart'), {
+            type: 'pie',
+            data: {
+                labels: months.slice(0, 4),
+                datasets: [{
+                    data: data1.slice(0, 4),
+                    backgroundColor: colors.multi.slice(0, 4),
+                    borderColor: colors.multiBorder.slice(0, 4),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // 环形图
+        const doughnutChart = new Chart(document.getElementById('doughnutChart'), {
+            type: 'doughnut',
+            data: {
+                labels: months.slice(0, 5),
+                datasets: [{
+                    data: data1.slice(0, 5),
+                    backgroundColor: colors.multi.slice(0, 5),
+                    borderColor: colors.multiBorder.slice(0, 5),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%'
+            }
+        });
+
+        // 雷达图
+        const radarChart = new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: {
+                labels: ['速度', '力量', '耐力', '技巧', '智力'],
+                datasets: [{
+                    label: '运动员 A',
+                    data: [85, 90, 75, 80, 85],
+                    fill: true,
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primaryBorder,
+                    pointBackgroundColor: colors.primaryBorder
+                }, {
+                    label: '运动员 B',
+                    data: [90, 85, 80, 90, 75],
+                    fill: true,
+                    backgroundColor: colors.secondary,
+                    borderColor: colors.secondaryBorder,
+                    pointBackgroundColor: colors.secondaryBorder
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // 极坐标图
+        const polarAreaChart = new Chart(document.getElementById('polarAreaChart'), {
+            type: 'polarArea',
+            data: {
+                labels: months.slice(0, 6),
+                datasets: [{
+                    data: data1.slice(0, 6),
+                    backgroundColor: colors.multi,
+                    borderColor: colors.multiBorder,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // 动态控制函数
+        function addRandomData() {
+            const moreMonths = ['七月', '八月', '九月', '十月', '十一月', '十二月'];
+            const index = barChart.data.labels.length % moreMonths.length;
+            const label = moreMonths[index] || `月${barChart.data.labels.length + 1}`;
+            const value = Math.floor(Math.random() * 100);
+
+            barChart.data.labels.push(label);
+            barChart.data.datasets.forEach(dataset => {
+                dataset.data.push(value);
+            });
+            barChart.update();
+
+            updateStats();
+        }
+
+        function removeLastData() {
+            if (barChart.data.labels.length > 2) {
+                barChart.data.labels.pop();
+                barChart.data.datasets.forEach(dataset => {
+                    dataset.data.pop();
+                });
+                barChart.update();
+                updateStats();
+            }
+        }
+
+        function randomizeData() {
+            barChart.data.datasets.forEach(dataset => {
+                dataset.data = dataset.data.map(() => Math.floor(Math.random() * 100));
+            });
+            barChart.update();
+            updateStats();
+        }
+
+        function toggleDataset() {
+            if (barChart.data.datasets.length === 1) {
+                barChart.data.datasets.push({
+                    label: '预测',
+                    data: data2,
+                    backgroundColor: colors.secondary,
+                    borderColor: colors.secondaryBorder,
+                    borderWidth: 1
+                });
+            } else {
+                barChart.data.datasets.pop();
+            }
+            barChart.update();
+            updateStats();
+        }
+
+        function resetChart() {
+            barChart.data.labels = months;
+            barChart.data.datasets = [{
+                label: '销售额',
+                data: [...data1],
+                backgroundColor: colors.primary,
+                borderColor: colors.primaryBorder,
+                borderWidth: 1
+            }];
+            barChart.update();
+            updateStats();
+        }
+
+        function updateStats() {
+            const data = barChart.data.datasets[0].data;
+            const total = data.reduce((a, b) => a + b, 0);
+            const average = (total / data.length).toFixed(1);
+            const max = Math.max(...data);
+
+            document.getElementById('totalValue').textContent = total;
+            document.getElementById('averageValue').textContent = average;
+            document.getElementById('maxValue').textContent = max;
+        }
+
+        // 初始化统计
+        updateStats();
+
+        // 暴露到全局
+        window.addRandomData = addRandomData;
+        window.removeLastData = removeLastData;
+        window.randomizeData = randomizeData;
+        window.toggleDataset = toggleDataset;
+        window.resetChart = resetChart;
+    </script>
+</body>
+</html>

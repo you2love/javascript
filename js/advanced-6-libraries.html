@@ -25,11 +25,11 @@
             <a href="../index.html">首页</a> &gt; 进阶教程 &gt; 常用准标准库
         </div>
 
-        <h1>常用准标准库 (2026版)</h1>
+        <h1>常用准标准库 </h1>
 
         <div class="section">
             <h2>什么是准标准库?</h2>
-            <p>准标准库是指虽然不是 JavaScript 官方标准，但在社区中被广泛使用、几乎成为事实标准的工具库和实用函数。2026年，这些库已经成为现代 JavaScript 开发不可或缺的一部分。</p>
+            <p>准标准库是指虽然不是 JavaScript 官方标准，但在社区中被广泛使用、几乎成为事实标准的工具库和实用函数。这些库已经成为现代 JavaScript 开发不可或缺的一部分。</p>
         </div>
 
         <div class="section">
@@ -88,21 +88,21 @@ dayjs.extend(utc);
 
 // 基本使用
 const now = dayjs();
-console.log(now.format('YYYY-MM-DD HH:mm:ss')); // '2026-01-26 15:30:00'
+console.log(now.format('YYYY-MM-DD HH:mm:ss')); // '2024-01-26 15:30:00'
 
 // 操作日期
 const tomorrow = dayjs().add(1, 'day');
 const lastMonth = dayjs().subtract(1, 'month');
 
 // 相对时间
-console.log(dayjs('2026-01-01').fromNow()); // '25 days ago'
+console.log(dayjs('2024-01-01').fromNow()); // '25 days ago'
 
 // 时区处理
 const utcTime = dayjs.utc();
 const localTime = dayjs.utc().local();
 
 // 解析和格式化
-const date = dayjs('2026-01-26', 'YYYY-MM-DD');
+const date = dayjs('2024-01-26', 'YYYY-MM-DD');
 console.log(date.format('MMMM D, YYYY')); // 'January 26, 2026' (英文)
 console.log(date.locale('zh-cn').format('YYYY年MM月DD日')); // 中文</code></pre>
             </div>
@@ -401,7 +401,7 @@ async function pasteText() {
 
         <div class="section">
             <h2>选择合适的库</h2>
-            <p>2026年选择库的原则:</p>
+            <p>选择库的原则:</p>
             <ul>
                 <li><strong>优先使用浏览器原生 API</strong> - 如 URLSearchParams、Blob、File API</li>
                 <li><strong>选择轻量级库</strong> - 如 Day.js (2KB) 而不是 Moment.js (67KB)</li>
@@ -419,7 +419,7 @@ async function pasteText() {
     </main>
 
     <footer>
-        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+        <p>&copy; 2024 JavaScript 学习网站. All rights reserved.</p>
     </footer>
 </body>
 </html>
