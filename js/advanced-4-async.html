@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>异步编程与 Promise - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+                <li><a href="tutorial-4-arrays-objects.html">上一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 进阶教程 &gt; 异步编程与 Promise
+        </div>
+
+        <h1>异步编程与 Promise (2026版)</h1>
+
+        <div class="section">
+            <h2>什么是异步编程?</h2>
+            <p>异步编程是 JavaScript 的核心特性之一。由于 JavaScript 是单线程的，异步编程允许程序在等待耗时操作完成时继续执行其他代码。</p>
+
+            <div class="code-block">
+<pre><code>// 同步代码 - 阻塞执行
+console.log("开始");
+const result = someSlowOperation(); // 阻塞3秒
+console.log("结束"); // 3秒后才执行
+
+// 异步代码 - 非阻塞执行
+console.log("开始");
+setTimeout(() => {
+    console.log("异步操作完成");
+}, 3000);
+console.log("结束"); // 立即执行</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Promise 基础</h2>
+            <p>Promise 是处理异步操作的现代方式，它代表一个可能现在、将来或永远不会完成的操作。</p>
+
+            <div class="code-block">
+<pre><code>// 创建 Promise
+const fetchData = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        const success = true;
+        if (success) {
+            resolve("数据获取成功");
+        } else {
+            reject("数据获取失败");
+        }
+    }, 1000);
+});
+
+// 使用 Promise
+fetchData
+    .then(data => console.log(data))
+    .catch(error => console.error(error))
+    .finally(() => console.log("操作完成"));</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>async/await (推荐)</h2>
+            <p>async/await 是 ES2017 引入的语法糖，让异步代码看起来像同步代码，更易读易写。</p>
+
+            <div class="code-block">
+<pre><code>// async 函数
+async function fetchData() {
+    try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('获取数据失败:', error);
+        throw error;
+    }
+}
+
+// 箭头函数形式
+const fetchUserData = async (userId) => {
+    const response = await fetch(`/api/users/${userId}`);
+    if (!response.ok) {
+        throw new Error('用户不存在');
+    }
+    return response.json();
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Promise 并发操作</h2>
+            <div class="code-block">
+<pre><code>// Promise.all - 所有 Promise 都成功才成功
+const fetchAllData = async () => {
+    const [users, posts, comments] = await Promise.all([
+        fetch('/api/users').then(r => r.json()),
+        fetch('/api/posts').then(r => r.json()),
+        fetch('/api/comments').then(r => r.json())
+    ]);
+    return { users, posts, comments };
+};
+
+// Promise.allSettled - 所有 Promise 都完成(无论成功或失败)
+const checkAll = async (tasks) => {
+    const results = await Promise.allSettled(tasks);
+    results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+            console.log(`任务${index}成功:`, result.value);
+        } else {
+            console.error(`任务${index}失败:`, result.reason);
+        }
+    });
+};
+
+// Promise.race - 返回最先完成的 Promise
+const fetchWithTimeout = async (url, timeout = 5000) => {
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('请求超时')), timeout)
+    );
+
+    return Promise.race([fetch(url), timeoutPromise]);
+};
+
+// Promise.any - 返回第一个成功的 Promise
+const fetchFirstAvailable = async (urls) => {
+    return Promise.any(urls.map(url => fetch(url)));
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>现代异步模式 (2026)</h2>
+            <div class="code-block">
+<pre><code>// 并行 for 循环
+const processItems = async (items) => {
+    await Promise.all(items.map(async (item) => {
+        await processItem(item);
+    }));
+};
+
+// 顺序 for 循环
+const processItemsSequentially = async (items) => {
+    for (const item of items) {
+        await processItem(item);
+    }
+};
+
+// 使用 AbortController 取消请求
+const fetchWithCancel = (url) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    return {
+        promise: fetch(url, { signal: controller.signal }),
+        cancel: () => {
+            clearTimeout(timeoutId);
+            controller.abort();
+        }
+    };
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>异步迭代 (ES2018+)</h2>
+            <div class="code-block">
+<pre><code>// 异步生成器
+async function* asyncIterator(data) {
+    for (const item of data) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        yield item;
+    }
+}
+
+// 使用异步迭代
+const processData = async () => {
+    for await (const item of asyncIterator([1, 2, 3])) {
+        console.log(item);
+    }
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>错误处理最佳实践</h2>
+            <div class="code-block">
+<pre><code>// 统一的错误处理
+class APIError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
+const safeFetch = async (url) => {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new APIError(
+                `HTTP Error: ${response.status}`,
+                response.status
+            );
+        }
+        return await response.json();
+    } catch (error) {
+        if (error instanceof APIError) {
+            console.error('API错误:', error.message);
+        } else {
+            console.error('网络错误:', error.message);
+        }
+        throw error;
+    }
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="tutorial-4-arrays-objects.html" class="nav-button prev">← 上一章: 数组和对象</a>
+            <a href="../index.html" class="nav-button next">返回首页 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组和对象 - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="tutorial-3-functions.html">上一章</a></li>
+                <li><a href="tutorial-5-conditions.html">下一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 基础教程 &gt; 数组和对象
+        </div>
+
+        <h1>第4章: 数组和对象</h1>
+
+        <div class="section">
+            <h2>数组 (Array)</h2>
+            <p>数组用于存储多个值,这些值可以是任何类型。</p>
+
+            <h3>创建数组</h3>
+            <div class="code-block">
+<pre><code>// 创建空数组
+let arr1 = [];
+let arr2 = new Array();
+
+// 创建包含元素的数组
+let fruits = ["苹果", "香蕉", "橙子"];
+let numbers = [1, 2, 3, 4, 5];
+let mixed = [1, "hello", true, null];</code></pre>
+            </div>
+
+            <h3>访问数组元素</h3>
+            <div class="code-block">
+<pre><code>let fruits = ["苹果", "香蕉", "橙子"];
+console.log(fruits[0]); // 输出: 苹果
+console.log(fruits[1]); // 输出: 香蕉
+console.log(fruits[2]); // 输出: 橙子</code></pre>
+            </div>
+
+            <h3>常用数组方法</h3>
+            <div class="code-block">
+<pre><code>let fruits = ["苹果", "香蕉", "橙子"];
+
+// 添加元素
+fruits.push("葡萄"); // 在末尾添加
+fruits.unshift("草莓"); // 在开头添加
+
+// 删除元素
+fruits.pop(); // 删除末尾元素
+fruits.shift(); // 删除开头元素
+
+// 数组长度
+console.log(fruits.length); // 输出数组长度
+
+// 查找元素索引
+console.log(fruits.indexOf("香蕉")); // 输出: 1
+
+// 遍历数组
+fruits.forEach(function(item, index) {
+    console.log(index + ": " + item);
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>对象 (Object)</h2>
+            <p>对象是键值对的集合,用于存储相关数据和方法。</p>
+
+            <h3>创建对象</h3>
+            <div class="code-block">
+<pre><code>// 创建空对象
+let obj1 = {};
+let obj2 = new Object();
+
+// 创建包含属性的对象
+let person = {
+    name: "张三",
+    age: 25,
+    city: "北京"
+};</code></pre>
+            </div>
+
+            <h3>访问对象属性</h3>
+            <div class="code-block">
+<pre><code>let person = {
+    name: "张三",
+    age: 25,
+    city: "北京"
+};
+
+// 点表示法
+console.log(person.name); // 输出: 张三
+console.log(person.age);  // 输出: 25
+
+// 方括号表示法
+console.log(person["city"]); // 输出: 北京</code></pre>
+            </div>
+
+            <h3>修改和添加属性</h3>
+            <div class="code-block">
+<pre><code>let person = {
+    name: "张三",
+    age: 25
+};
+
+// 修改属性
+person.age = 26;
+person["name"] = "李四";
+
+// 添加新属性
+person.city = "上海";
+person.email = "test@example.com";
+
+// 删除属性
+delete person.email;</code></pre>
+            </div>
+
+            <h3>对象方法</h3>
+            <div class="code-block">
+<pre><code>let person = {
+    name: "张三",
+    age: 25,
+    greet: function() {
+        return "你好,我是" + this.name;
+    },
+    celebrateBirthday: function() {
+        this.age++;
+        return this.age;
+    }
+};
+
+console.log(person.greet()); // 输出: 你好,我是张三
+console.log(person.celebrateBirthday()); // 输出: 26</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>数组 vs 对象</h2>
+            <ul>
+                <li><strong>数组</strong>: 有序的元素列表,通过索引访问</li>
+                <li><strong>对象</strong>: 无序的键值对集合,通过键名访问</li>
+            </ul>
+        </div>
+
+        <div class="navigation">
+            <a href="tutorial-3-functions.html" class="nav-button prev">← 上一章: 函数</a>
+            <a href="tutorial-5-conditions.html" class="nav-button next">下一章: 条件语句 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

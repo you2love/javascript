@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>变量和数据类型 - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="tutorial-1-intro.html">上一章</a></li>
+                <li><a href="tutorial-3-functions.html">下一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 基础教程 &gt; 变量和数据类型
+        </div>
+
+        <h1>第2章: 变量和数据类型 (2026版)</h1>
+
+        <div class="section">
+            <h2>什么是变量?</h2>
+            <p>变量是用于存储数据值的容器。在现代 JavaScript 开发中，理解作用域、不可变性和类型安全是编写高质量代码的关键。</p>
+        </div>
+
+        <div class="section">
+            <h2>声明变量 (现代最佳实践)</h2>
+            <p>在 JavaScript 中，2026年推荐使用以下方式声明变量:</p>
+
+            <h3>1. const (首选，不可变引用)</h3>
+            <div class="code-block">
+<pre><code>// 声明常量引用 (推荐用于大多数情况)
+const API_URL = "https://api.example.com";
+const config = { timeout: 5000 };
+
+// 对象和数组的内容可以修改，但引用不可变
+config.timeout = 3000; // ✅ 允许
+// config = {}; // ❌ 报错: Assignment to constant variable</code></pre>
+            </div>
+
+            <h3>2. let (用于需要重新赋值的变量)</h3>
+            <div class="code-block">
+<pre><code>// 用于需要改变值的变量
+let counter = 0;
+counter = counter + 1; // ✅ 允许
+
+let items = [];
+items.push('item'); // ✅ 允许</code></pre>
+            </div>
+
+            <h3>3. var (已过时，不推荐)</h3>
+            <div class="code-block">
+<pre><code>// ⚠️ 仅在维护旧代码时使用
+// 新代码避免使用 var
+var name = "张三";</code></pre>
+            </div>
+
+            <p><strong>最佳实践:</strong></p>
+            <ul>
+                <li>优先使用 <code>const</code> - 默认选择，防止意外修改</li>
+                <li>需要重新赋值时使用 <code>let</code> - 明确表示值会改变</li>
+                <li>避免使用 <code>var</code> - 函数作用域容易导致 bug</li>
+                <li>使用解构赋值提取值 - 代码更简洁</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>数据类型 (2026完整版)</h2>
+            <p>JavaScript 有以下数据类型:</p>
+
+            <h3>1. 原始类型</h3>
+            <div class="code-block">
+<pre><code>// 字符串 (String)
+const name = "Hello";
+const message = 'World';
+const template = `Hello ${name}`; // 模板字符串
+
+// 数字 (Number) 和 BigInt (ES2020)
+const age = 25;
+const price = 19.99;
+const bigNumber = 9007199254740991n; // BigInt
+
+// 布尔值 (Boolean)
+const isActive = true;
+const isCompleted = false;
+
+// Symbol (ES2015) - 唯一标识符
+const sym = Symbol('description');
+
+// Undefined 和 Null
+let x; // undefined
+const y = null; // null</code></pre>
+            </div>
+
+            <h3>2. 引用类型</h3>
+            <div class="code-block">
+<pre><code>// 对象 (Object)
+const person = {
+    name: "张三",
+    age: 25,
+    city: "北京",
+    // 简写属性
+    greet() {
+        return `Hello, I'm ${this.name}`;
+    }
+};
+
+// 数组 (Array)
+const colors = ["红色", "绿色", "蓝色"];
+const numbers = [1, 2, 3, 4, 5];
+
+// Map (ES2015) - 更强大的键值对集合
+const map = new Map();
+map.set('key', 'value');
+
+// Set (ES2015) - 唯一值集合
+const unique = new Set([1, 2, 2, 3]); // [1, 2, 3]
+
+// WeakMap 和 WeakSet - 弱引用集合
+const weakMap = new WeakMap();</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>现代特性: 解构和展开</h2>
+            <p>ES2015 引入的解构和展开运算符让代码更简洁:</p>
+
+            <div class="code-block">
+<pre><code>// 数组解构
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+// first = 1, second = 2, rest = [3, 4, 5]
+
+// 对象解构
+const { name, age, city = "上海" } = person;
+// name = "张三", age = 25, city = "北京"
+
+// 展开运算符
+const newArray = [...colors, "紫色"]; // 合并数组
+const newPerson = { ...person, email: "test@example.com" }; // 合并对象</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>可选链 (?.) 和 空值合并 (??)</h2>
+            <p>ES2020 引入的现代操作符:</p>
+
+            <div class="code-block">
+<pre><code>// 可选链 - 安全访问嵌套属性
+const user = { profile: { name: "张三" } };
+const name = user?.profile?.name; // "张三"
+const age = user?.profile?.age; // undefined
+
+// 空值合并 - 仅当值为 null 或 undefined 时使用默认值
+const userName = user?.name ?? "匿名用户"; // "匿名用户"
+const displayName = "" ?? "默认值"; // "" (空字符串不是 null/undefined)
+
+// 可选链赋值 (ES2021)
+user?.profile?.email = "test@example.com";</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>类型检查和转换</h2>
+            <div class="code-block">
+<pre><code>// typeof 操作符
+console.log(typeof "hello"); // "string"
+console.log(typeof 42); // "number"
+console.log(typeof true); // "boolean"
+console.log(typeof {}); // "object"
+console.log(typeof []); // "object" (数组也是对象)
+console.log(typeof null); // "object" (历史遗留问题)
+console.log(typeof undefined); // "undefined"
+
+// 类型转换
+const num = Number("123"); // 123
+const str = String(123); // "123"
+const bool = Boolean("hello"); // true
+
+// 类型检查
+Array.isArray([]); // true
+Array.isArray({}); // false</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>变量命名规则 (2026)</h2>
+            <ul>
+                <li>使用有意义的名称，避免缩写</li>
+                <li>常量使用 <code>UPPER_SNAKE_CASE</code></li>
+                <li>普通变量使用 <code>camelCase</code></li>
+                <li>类名使用 <code>PascalCase</code></li>
+                <li>私有属性使用 <code>_prefix</code> 或 <code>#prefix</code> (ES2019)</li>
+                <li>布尔值以 <code>is/has/can/should</code> 开头</li>
+            </ul>
+
+            <div class="code-block">
+<pre><code>// ✅ 好的命名
+const API_BASE_URL = "https://api.example.com";
+const MAX_RETRY_COUNT = 3;
+let currentCount = 0;
+const isLoading = true;
+const hasPermission = false;
+class UserManager { }
+
+// ❌ 不好的命名
+const url = "https://api.example.com";
+let x = 0;
+const flag = true;</code></pre>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="tutorial-1-intro.html" class="nav-button prev">← 上一章: JavaScript 简介</a>
+            <a href="tutorial-3-functions.html" class="nav-button next">下一章: 函数 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 学习网站</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#basics">基础教程</a></li>
+                <li><a href="#advanced">进阶教程</a></li>
+                <li><a href="#examples">实战示例</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>欢迎学习 JavaScript (2026版)</h1>
+                <p>从零开始学习现代 Web 开发的核心技术</p>
+                <button class="cta-button" onclick="scrollToSection('basics')">开始学习</button>
+            </div>
+        </section>
+
+        <section id="basics" class="section">
+            <h2>JavaScript 基础教程</h2>
+            <div class="tutorial-grid">
+                <div class="tutorial-card">
+                    <h3>1. JavaScript 简介</h3>
+                    <p>了解 JavaScript 的历史、特点和应用场景</p>
+                    <a href="js/tutorial-1-intro.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>2. 变量和数据类型</h3>
+                    <p>学习如何声明变量和使用不同的数据类型</p>
+                    <a href="js/tutorial-2-variables.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>3. 函数</h3>
+                    <p>掌握函数的定义、调用和参数传递</p>
+                    <a href="js/tutorial-3-functions.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>4. 数组和对象</h3>
+                    <p>深入理解数组操作和对象的使用</p>
+                    <a href="js/tutorial-4-arrays-objects.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>5. 条件语句</h3>
+                    <p>学习 if-else、switch 等条件控制</p>
+                    <a href="js/tutorial-5-conditions.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>6. 循环语句</h3>
+                    <p>掌握 for、while、do-while 等循环</p>
+                    <a href="js/tutorial-6-loops.html" class="card-link">开始学习 →</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="advanced" class="section">
+            <h2>JavaScript 进阶教程 (2026)</h2>
+            <div class="tutorial-grid">
+                <div class="tutorial-card">
+                    <h3>1. DOM 操作</h3>
+                    <p>学习如何操作页面元素</p>
+                    <a href="js/advanced-1-dom.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>2. 事件处理</h3>
+                    <p>处理用户交互事件</p>
+                    <a href="js/advanced-2-events.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>3. ES6+ 新特性</h3>
+                    <p>学习箭头函数、解构、模板字符串等</p>
+                    <a href="js/advanced-3-es6.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>4. 异步编程</h3>
+                    <p>Promise 和 async/await</p>
+                    <a href="js/advanced-4-async.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>5. TypeScript 基础</h3>
+                    <p>类型安全和现代开发模式</p>
+                    <a href="js/advanced-5-typescript.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>6. 常用准标准库</h3>
+                    <p>Lodash、Day.js、Zod等工具库</p>
+                    <a href="js/advanced-6-libraries.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>7. 最佳实践</h3>
+                    <p>代码质量、性能优化、安全性</p>
+                    <a href="js/advanced-7-bestpractices.html" class="card-link">开始学习 →</a>
+                </div>
+                <div class="tutorial-card">
+                    <h3>8. 设计模式</h3>
+                    <p>单例、工厂、观察者等模式</p>
+                    <a href="js/advanced-8-patterns.html" class="card-link">开始学习 →</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="examples" class="section">
+            <h2>实战示例 (2026现代版)</h2>
+            <div class="example-grid">
+                <div class="example-card">
+                    <h3>计算器</h3>
+                    <p>使用 ES6 类实现的计算器</p>
+                    <a href="examples/calculator.html" class="card-link">查看示例 →</a>
+                </div>
+                <div class="example-card">
+                    <h3>待办事项</h3>
+                    <p>完整功能的 Todo List，支持持久化</p>
+                    <a href="examples/todo.html" class="card-link">查看示例 →</a>
+                </div>
+                <div class="example-card">
+                    <h3>时钟显示</h3>
+                    <p>实时显示当前时间，支持多格式</p>
+                    <a href="examples/clock.html" class="card-link">查看示例 →</a>
+                </div>
+                <div class="example-card">
+                    <h3>图片轮播</h3>
+                    <p>实现图片自动轮播效果</p>
+                    <a href="examples/slideshow.html" class="card-link">查看示例 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

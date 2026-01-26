@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>条件语句 - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="tutorial-4-arrays-objects.html">上一章</a></li>
+                <li><a href="tutorial-6-loops.html">下一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 基础教程 &gt; 条件语句
+        </div>
+
+        <h1>第5章: 条件语句</h1>
+
+        <div class="section">
+            <h2>if 语句</h2>
+            <p>if 语句用于在条件为 true 时执行代码:</p>
+
+            <div class="code-block">
+<pre><code>let score = 85;
+
+if (score >= 60) {
+    console.log("及格了!");
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>if...else 语句</h2>
+            <p>if...else 语句在条件为 false 时执行另一段代码:</p>
+
+            <div class="code-block">
+<pre><code>let score = 55;
+
+if (score >= 60) {
+    console.log("及格了!");
+} else {
+    console.log("没及格!");
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>if...else if...else 语句</h2>
+            <p>可以检查多个条件:</p>
+
+            <div class="code-block">
+<pre><code>let score = 75;
+
+if (score >= 90) {
+    console.log("优秀!");
+} else if (score >= 80) {
+    console.log("良好!");
+} else if (score >= 60) {
+    console.log("及格!");
+} else {
+    console.log("没及格!");
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>三元运算符</h2>
+            <p>三元运算符是 if...else 的简写形式:</p>
+
+            <div class="code-block">
+<pre><code>// 传统写法
+let age = 18;
+let message;
+if (age >= 18) {
+    message = "成年人";
+} else {
+    message = "未成年人";
+}
+
+// 三元运算符写法
+let message2 = age >= 18 ? "成年人" : "未成年人";
+
+console.log(message);  // 输出: 成年人
+console.log(message2); // 输出: 成年人</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>switch 语句</h2>
+            <p>switch 语句用于基于不同的条件执行不同的代码:</p>
+
+            <div class="code-block">
+<pre><code>let day = 3;
+let dayName;
+
+switch (day) {
+    case 1:
+        dayName = "星期一";
+        break;
+    case 2:
+        dayName = "星期二";
+        break;
+    case 3:
+        dayName = "星期三";
+        break;
+    case 4:
+        dayName = "星期四";
+        break;
+    case 5:
+        dayName = "星期五";
+        break;
+    case 6:
+        dayName = "星期六";
+        break;
+    case 7:
+        dayName = "星期日";
+        break;
+    default:
+        dayName = "未知";
+}
+
+console.log(dayName); // 输出: 星期三</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>比较运算符</h2>
+            <p>条件语句中常用的比较运算符:</p>
+
+            <ul>
+                <li><code>==</code> 等于 (值相等,不检查类型)</li>
+                <li><code>===</code> 严格等于 (值和类型都相等,推荐)</li>
+                <li><code>!=</code> 不等于</li>
+                <li><code>!==</code> 严格不等于</li>
+                <li><code>&gt;</code> 大于</li>
+                <li><code>&lt;</code> 小于</li>
+                <li><code>&gt;=</code> 大于或等于</li>
+                <li><code>&lt;=</code> 小于或等于</li>
+            </ul>
+
+            <div class="code-block">
+<pre><code>let x = 5;
+let y = "5";
+
+console.log(x == y);   // true (值相等)
+console.log(x === y);  // false (类型不同)</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>逻辑运算符</h2>
+            <p>用于组合多个条件:</p>
+
+            <ul>
+                <li><code>&amp;&amp;</code> 逻辑与 (所有条件都为 true 时才返回 true)</li>
+                <li><code>||</code> 逻辑或 (任意一个条件为 true 时就返回 true)</li>
+                <li><code>!</code> 逻辑非 (反转布尔值)</li>
+            </ul>
+
+            <div class="code-block">
+<pre><code>let age = 25;
+let hasLicense = true;
+
+if (age >= 18 &amp;&amp; hasLicense) {
+    console.log("可以开车!");
+}
+
+let isWeekend = true;
+let isHoliday = false;
+
+if (isWeekend || isHoliday) {
+    console.log("可以休息!");
+}
+
+let isRaining = false;
+if (!isRaining) {
+    console.log("可以出门!");
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="tutorial-4-arrays-objects.html" class="nav-button prev">← 上一章: 数组和对象</a>
+            <a href="tutorial-6-loops.html" class="nav-button next">下一章: 循环语句 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

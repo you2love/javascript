@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript 基础 - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+                <li><a href="advanced-3-es6.html">上一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 进阶教程 &gt; TypeScript 基础
+        </div>
+
+        <h1>TypeScript 基础 (2026版)</h1>
+
+        <div class="section">
+            <h2>什么是 TypeScript?</h2>
+            <p>TypeScript 是 JavaScript 的超集，添加了静态类型检查。它由 Microsoft 开发，是 2026 年 JavaScript 生态系统中的主流语言。</p>
+
+            <ul>
+                <li>🎯 提供类型安全，减少运行时错误</li>
+                <li>💡 智能提示和自动补全</li>
+                <li>🛠️ 更好的重构体验</li>
+                <li>📖 更清晰的代码文档</li>
+                <li>✅ 编译时发现错误</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>基本类型</h2>
+            <div class="code-block">
+<pre><code>// 基本类型
+const name: string = "张三";
+const age: number = 25;
+const isActive: boolean = true;
+const data: null = null;
+const nothing: undefined = undefined;
+
+// 数组类型
+const numbers: number[] = [1, 2, 3];
+const names: Array<string> = ["张三", "李四"];
+
+// 对象类型
+interface Person {
+    name: string;
+    age: number;
+    city?: string; // 可选属性
+}
+
+const person: Person = {
+    name: "张三",
+    age: 25,
+    city: "北京"
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>函数类型</h2>
+            <div class="code-block">
+<pre><code>// 函数声明
+function greet(name: string): string {
+    return `你好,${name}`;
+}
+
+// 箭头函数
+const add = (a: number, b: number): number => a + b;
+
+// 可选参数
+const greetUser = (name: string, greeting?: string) => {
+    const message = greeting || "你好";
+    return `${message},${name}`;
+};
+
+// 默认参数
+const createUser = (name: string, age: number = 18) => ({
+    name,
+    age
+});
+
+// 剩余参数
+const sum = (...numbers: number[]): number =>
+    numbers.reduce((a, b) => a + b, 0);</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>高级类型</h2>
+            <div class="code-block">
+<pre><code>// 联合类型
+type ID = string | number;
+const userId: ID = 123;
+const orderId: ID = "order-123";
+
+// 字面量类型
+type Theme = "light" | "dark" | "auto";
+const currentTheme: Theme = "dark";
+
+// 数组元组
+type Coordinate = [number, number];
+const point: Coordinate = [10, 20];
+
+// 枚举
+enum Status {
+    Pending = "pending",
+    Success = "success",
+    Failed = "failed"
+}
+
+// 类型断言
+const value: unknown = "hello";
+const length: number = (value as string).length;</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>泛型</h2>
+            <div class="code-block">
+<pre><code>// 泛型函数
+function identity<T>(value: T): T {
+    return value;
+}
+
+const num = identity<number>(42);
+const str = identity<string>("hello");
+
+// 泛型接口
+interface Box<T> {
+    value: T;
+}
+
+const box1: Box<number> = { value: 123 };
+const box2: Box<string> = { value: "hello" };
+
+// 泛型约束
+interface HasLength {
+    length: number;
+}
+
+function getLength<T extends HasLength>(value: T): number {
+    return value.length;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>类型推断</h2>
+            <div class="code-block">
+<pre><code>// TypeScript 可以自动推断类型
+const name = "张三"; // 自动推断为 string
+const age = 25; // 自动推断为 number
+
+// 函数返回类型推断
+const add = (a: number, b: number) => a + b; // 自动推断返回 number
+
+// 对象类型推断
+const user = {
+    name: "张三",
+    age: 25
+}; // 自动推断为 {name: string, age: number}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>实用类型工具</h2>
+            <div class="code-block">
+<pre><code>// Partial - 所有属性变为可选
+interface User {
+    name: string;
+    age: number;
+}
+type PartialUser = Partial<User>;
+// { name?: string; age?: number }
+
+// Required - 所有属性变为必需
+type RequiredUser = Required<User>;
+// { name: string; age: number }
+
+// Pick - 选择部分属性
+type UserName = Pick<User, "name">;
+// { name: string }
+
+// Omit - 排除部分属性
+type UserWithoutAge = Omit<User, "age">;
+// { name: string }
+
+// Record - 创建对象类型
+type UserRecord = Record<string, User>;
+
+// Exclude - 排除联合类型
+type ExcludeString = Exclude<string | number, string>;
+// number</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>在浏览器中使用 TypeScript</h2>
+            <p>虽然有 JSDoc 等替代方案，但 TypeScript 编译器（tsc）仍然是最完整的类型检查工具。</p>
+
+            <div class="code-block">
+<pre><code>// 使用 JSDoc 提供类型提示 (推荐用于小型项目)
+/**
+ * @param {string} name - 用户名
+ * @param {number} age - 年龄
+ * @returns {Object} 用户对象
+ */
+function createUser(name, age) {
+    return { name, age };
+}
+
+// 使用 TypeScript 配置
+// tsconfig.json
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "strict": true,
+        "moduleResolution": "node"
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>TypeScript vs JavaScript (2026)</h2>
+            <p>什么时候使用 TypeScript?</p>
+            <ul>
+                <li>✅ 大型项目或团队协作</li>
+                <li>✅ 需要长期维护的项目</li>
+                <li>✅ 复杂的业务逻辑</li>
+                <li>✅ 需要更好的开发体验</li>
+                <li>❓ 小型脚本或快速原型</li>
+                <li>❓ 学习阶段的项目</li>
+            </ul>
+        </div>
+
+        <div class="navigation">
+            <a href="advanced-3-es6.html" class="nav-button prev">← 上一章: ES6+ 新特性</a>
+            <a href="../index.html" class="nav-button next">返回首页 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

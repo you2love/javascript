@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript 最佳实践 - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="advanced-6-libraries.html">上一章</a></li>
+                <li><a href="../index.html">返回首页</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 进阶教程 &gt; 最佳实践
+        </div>
+
+        <h1>JavaScript 最佳实践 (2026版)</h1>
+
+        <div class="section">
+            <h2>代码质量原则</h2>
+            <h3>1. 保持函数简单</h3>
+            <div class="code-block">
+<pre><code>// ❌ 不好的做法 - 函数太长，做了太多事情
+function processUserData(data) {
+    let cleanedData = [];
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        if (item.name) {
+            item.name = item.name.trim();
+        }
+        if (item.age && item.age < 0) {
+            item.age = 0;
+        }
+        if (item.email && !item.email.includes('@')) {
+            delete item.email;
+        }
+        cleanedData.push(item);
+    }
+    return cleanedData;
+}
+
+// ✅ 好的做法 - 拆分成小函数
+const cleanUserName = (name) => name?.trim();
+const normalizeAge = (age) => Math.max(0, age || 0);
+const validateEmail = (email) => email?.includes('@') ? email : null;
+
+const cleanUserData = (data) => data.map(user => ({
+    ...user,
+    name: cleanUserName(user.name),
+    age: normalizeAge(user.age),
+    email: validateEmail(user.email)
+}));
+
+const filterValidUsers = (users) =>
+    users.filter(user => user.email && user.name);</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. 使用有意义的变量名</h2>
+            <div class="code-block">
+<pre><code>// ❌ 不好的做法
+const d = new Date();
+const a = users.filter(u => u.active);
+const r = res.json();
+
+// ✅ 好的做法
+const currentDate = new Date();
+const activeUsers = users.filter(user => user.isActive);
+const response = await fetch(url);
+const data = await response.json();</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 避免魔法数字</h2>
+            <div class="code-block">
+<pre><code>// ❌ 不好的做法
+if (status === 1) {
+    // 处理成功状态
+} else if (status === 2) {
+    // 处理失败状态
+}
+
+// ✅ 好的做法
+const STATUS = {
+    SUCCESS: 1,
+    FAILURE: 2,
+    PENDING: 3
+};
+
+if (status === STATUS.SUCCESS) {
+    // 处理成功状态
+} else if (status === STATUS.FAILURE) {
+    // 处理失败状态
+}
+
+// 或使用字符串常量
+const API_STATUS = {
+    SUCCESS: 'success',
+    FAILURE: 'failure',
+    PENDING: 'pending'
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>性能优化</h2>
+            <h3>1. 避免不必要的重新渲染</h3>
+            <div class="code-block">
+<pre><code>// ❌ 不好的做法 - 每次渲染都创建新数组
+function UserList({ users }) {
+    return (
+        <ul>
+            {users.map(user => (
+                <li key={user.id}>{user.name}</li>
+            ))}
+        </ul>
+    );
+}
+
+// ✅ 好的做法 - 使用 useMemo 缓存
+function UserList({ users }) {
+    const userItems = useMemo(() =>
+        users.map(user => (
+            <li key={user.id}>{user.name}</li>
+        )),
+        [users]
+    );
+
+    return <ul>{userItems}</ul>;
+}
+
+// ✅ 或使用 React.memo
+const UserItem = React.memo(function UserItem({ user }) {
+    return <li>{user.name}</li>;
+});</code></pre>
+            </div>
+
+            <h3>2. 防抖和节流</h3>
+            <div class="code-block">
+<pre><code>// 防抖 - 延迟执行，只在停止触发后执行
+const debouncedSearch = debounce((query) => {
+    performSearch(query);
+}, 300);
+
+// 节流 - 固定时间间隔执行
+const throttledScroll = throttle(() => {
+    handleScroll();
+}, 100);
+
+// 使用示例
+searchInput.addEventListener('input', (e) => {
+    debouncedSearch(e.target.value);
+});
+
+window.addEventListener('scroll', throttledScroll);</code></pre>
+            </div>
+
+            <h3>3. 事件委托</h3>
+            <div class="code-block">
+<pre><code>// ❌ 不好的做法 - 为每个元素添加事件监听器
+const buttons = document.querySelectorAll('.button');
+buttons.forEach(btn => {
+    btn.addEventListener('click', handleClick);
+});
+
+// ✅ 好的做法 - 使用事件委托
+const container = document.querySelector('.container');
+container.addEventListener('click', (e) => {
+    if (e.target.matches('.button')) {
+        handleClick(e.target);
+    }
+});
+
+// React 中的事件委托
+function ButtonList({ items, onClick }) {
+    const handleClick = (e) => {
+        const index = e.target.dataset.index;
+        onClick(parseInt(index));
+    };
+
+    return (
+        <ul onClick={handleClick}>
+            {items.map((item, index) => (
+                <li key={index} data-index={index}>
+                    {item}
+                </li>
+            ))}
+        </ul>
+    );
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>错误处理</h2>
+            <div class="code-block">
+<pre><code>// ✅ 好的做法 - 自定义错误类
+class APIError extends Error {
+    constructor(message, statusCode, code) {
+        super(message);
+        this.statusCode = statusCode;
+        this.code = code;
+        this.name = 'APIError';
+    }
+}
+
+// ✅ 好的做法 - 优雅的错误处理
+async function fetchData(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new APIError(
+                `HTTP Error: ${response.status}`,
+                response.status,
+                'HTTP_ERROR'
+            );
+        }
+        return await response.json();
+    } catch (error) {
+        if (error instanceof APIError) {
+            // API 错误处理
+            console.error('API Error:', error.message);
+            throw error;
+        } else if (error instanceof TypeError) {
+            // 网络错误处理
+            console.error('Network Error:', error.message);
+            throw new APIError(
+                '网络连接失败',
+                0,
+                'NETWORK_ERROR'
+            );
+        }
+        throw error;
+    }
+}
+
+// ✅ 好的做法 - 错误边界 (React)
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+
+    static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error('Error caught by boundary:', error, errorInfo);
+        // 可以在这里上报错误
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="error-fallback">
+                    <h2>出错了</h2>
+                    <p>{this.state.error?.message}</p>
+                    <button onClick={() => this.setState({ hasError: false, error: null })}>
+                        重试
+                    </button>
+                </div>
+            );
+        }
+
+        return this.props.children;
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>安全性</h2>
+            <h3>1. XSS 防护</h3>
+            <div class="code-block">
+<pre><code>// ❌ 不好的做法 - 直接使用 dangerouslySetInnerHTML
+<div dangerouslySetInnerHTML={{ __html: userContent }} />
+
+// ✅ 好的做法 - 清理 HTML
+import DOMPurify from 'dompurify';
+
+const cleanContent = DOMPurify.sanitize(userContent, {
+    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'a'],
+    ALLOWED_ATTR: ['href']
+});
+
+// ✅ 好的做法 - 使用文本内容
+<div>{userContent}</div>
+
+// ✅ 好的做法 - 使用模板字符串
+<div>{userInput}</div></code></pre>
+            </div>
+
+            <h3>2. 敏感信息保护</h3>
+            <div class="code-block">
+<pre><code>// ❌ 不好的做法 - 在 URL 中传递敏感信息
+fetch('/api/users?password=secret123');
+
+// ❌ 不好的做法 - 在 localStorage 存储敏感信息
+localStorage.setItem('password', 'secret123');
+
+// ✅ 好的做法 - 使用 POST 请求
+fetch('/api/users', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username, password })
+});
+
+// ✅ 好的做法 - 使用 sessionStorage 或 sessionStorage
+sessionStorage.setItem('authToken', token);
+sessionStorage.removeItem('authToken'); // 用完即删
+
+// ✅ 好的做法 - 使用 HTTP-only Cookie
+// 由服务器设置，JavaScript 无法访问</code></pre>
+            </div>
+
+            <h3>3. 验证和清理</h3>
+            <div class="code-block">
+<pre><code>// ✅ 好的做法 - 服务端验证 + 客户端验证
+const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+const sanitizeInput = (input) => {
+    if (typeof input !== 'string') return '';
+    return input.trim().slice(0, 1000); // 限制长度
+};
+
+const processUserInput = (input) => {
+    const sanitized = sanitizeInput(input);
+    if (!sanitized) {
+        throw new Error('输入不能为空');
+    }
+    return sanitized;
+};</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>代码组织</h2>
+            <h3>1. 模块化</h3>
+            <div class="code-block">
+<pre><code>// ✅ 好的做法 - 按功能组织代码
+// api/user.js
+export const fetchUsers = () => fetch('/api/users').then(r => r.json());
+export const createUser = (data) => fetch('/api/users', {
+    method: 'POST',
+    body: JSON.stringify(data)
+});
+
+// utils/validation.js
+export const validateEmail = (email) => { /* ... */ };
+export const validatePhone = (phone) => { /* ... */ };
+
+// components/UserList.js
+import { fetchUsers } from '../api/user';
+import { validateEmail } from '../utils/validation';
+
+export function UserList() {
+    // ...
+}</code></pre>
+            </div>
+
+            <h3>2. 配置管理</h3>
+            <div class="code-block">
+<pre><code>// config.js
+export const config = {
+    api: {
+        baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+        timeout: 10000
+    },
+    features: {
+        enableNotifications: true,
+        enableAnalytics: import.meta.env.PROD
+    },
+    limits: {
+        maxFileSize: 10 * 1024 * 1024, // 10MB
+        maxUploadsPerDay: 100
+    }
+};
+
+// 使用
+import { config } from './config';
+
+fetch(`${config.api.baseURL}/users`, {
+    timeout: config.api.timeout
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>可访问性 (A11y)</h2>
+            <div class="code-block">
+<pre><code>// ✅ 好的做法 - 语义化 HTML
+<button type="button" aria-label="关闭对话框">
+    &times;
+</button>
+
+<input
+    type="email"
+    id="email"
+    name="email"
+    required
+    aria-required="true"
+    placeholder="your@email.com"
+/>
+
+// ✅ 好的做法 - 焦点管理
+const handleEscape = (e) => {
+    if (e.key === 'Escape') {
+        closeModal();
+        closeButton.focus();
+    }
+};
+
+// ✅ 好的做法 - ARIA 角色
+<div role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <h2 id="dialog-title">标题</h2>
+    <p>内容</p>
+</div></code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>测试</h2>
+            <div class="code-block">
+<pre><code>// ✅ 好的做法 - 单元测试
+import { describe, it, expect } from 'vitest';
+import { calculateTotal } from './utils';
+
+describe('calculateTotal', () => {
+    it('应该正确计算总价', () => {
+        const items = [
+            { price: 10, quantity: 2 },
+            { price: 5, quantity: 3 }
+        ];
+        expect(calculateTotal(items)).toBe(35);
+    });
+
+    it('空数组应该返回 0', () => {
+        expect(calculateTotal([])).toBe(0);
+    });
+});
+
+// ✅ 好的做法 - 集成测试
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Button } from './Button';
+
+it('应该触发点击事件', () => {
+    const handleClick = vitest.fn();
+    render(<Button onClick={handleClick}>点击</Button>);
+
+    fireEvent.click(screen.getByText('点击'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2026年最佳实践总结</h2>
+            <ul>
+                <li>✅ 优先使用 const 和 let，避免 var</li>
+                <li>✅ 使用箭头函数和模板字符串</li>
+                <li>✅ 使用 async/await 处理异步</li>
+                <li>✅ 使用解构和展开运算符</li>
+                <li>✅ 使用可选链 ?. 和空值合并 ??</li>
+                <li>✅ 保持函数简单，单一职责</li>
+                <li>✅ 使用有意义的变量和函数名</li>
+                <li>✅ 错误处理要完善</li>
+                <li>✅ 注重安全性（XSS、CSRF 防护）</li>
+                <li>✅ 考虑可访问性</li>
+                <li>✅ 编写测试</li>
+                <li>✅ 使用 ESLint 和 Prettier</li>
+                <li>✅ 使用 TypeScript 获得类型安全</li>
+            </ul>
+        </div>
+
+        <div class="navigation">
+            <a href="advanced-6-libraries.html" class="nav-button prev">← 上一章: 常用准标准库</a>
+            <a href="../index.html" class="nav-button next">返回首页 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

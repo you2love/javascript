@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时钟显示 - JavaScript示例</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/examples.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 示例</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="example-container">
+        <h1>实时时钟</h1>
+        <p class="example-description">显示当前时间,每秒更新</p>
+
+        <div class="clock-display">
+            <div id="digitalClock" class="digital-clock">
+                00:00:00
+            </div>
+            <div id="dateDisplay" class="date-display">
+                2024年1月1日 星期一
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="toggleFormat()">切换格式 (12/24)</button>
+            <button class="control-btn" onclick="toggleSeconds()">显示/隐藏秒</button>
+        </div>
+
+        <div class="code-section">
+            <h2>核心代码</h2>
+            <div class="code-block">
+<pre><code>let is24Hour = true;
+let showSeconds = true;
+
+function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    // 12小时制转换
+    if (!is24Hour) {
+        const period = hours >= 12 ? ' PM' : ' AM';
+        hours = hours % 12 || 12;
+        return `${pad(hours)}:${pad(minutes)}${showSeconds ? ':' + pad(seconds) : ''}${period}`;
+    }
+
+    // 24小时制
+    return `${pad(hours)}:${pad(minutes)}${showSeconds ? ':' + pad(seconds) : ''}`;
+}
+
+function pad(num) {
+    return num.toString().padStart(2, '0');
+}
+
+function formatDate() {
+    const now = new Date();
+    const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    const weekday = weekdays[now.getDay()];
+
+    return `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${weekday}`;
+}</code></pre>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let is24Hour = true;
+        let showSeconds = true;
+
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            let timeString;
+
+            if (!is24Hour) {
+                const period = hours >= 12 ? ' PM' : ' AM';
+                hours = hours % 12 || 12;
+                timeString = `${pad(hours)}:${pad(minutes)}${showSeconds ? ':' + pad(seconds) : ''}${period}`;
+            } else {
+                timeString = `${pad(hours)}:${pad(minutes)}${showSeconds ? ':' + pad(seconds) : ''}`;
+            }
+
+            document.getElementById('digitalClock').textContent = timeString;
+            document.getElementById('dateDisplay').textContent = formatDate();
+        }
+
+        function pad(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function formatDate() {
+            const now = new Date();
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            return `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${weekday}`;
+        }
+
+        function toggleFormat() {
+            is24Hour = !is24Hour;
+            updateClock();
+        }
+
+        function toggleSeconds() {
+            showSeconds = !showSeconds;
+            updateClock();
+        }
+
+        // 立即更新一次,然后每秒更新
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

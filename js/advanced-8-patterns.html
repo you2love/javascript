@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设计模式和代码模式 - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+                <li><a href="advanced-7-bestpractices.html">上一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 进阶教程 &gt; 设计模式和代码模式
+        </div>
+
+        <h1>设计模式和代码模式 (2026版)</h1>
+
+        <div class="section">
+            <h2>单例模式 (Singleton)</h2>
+            <p>确保一个类只有一个实例，并提供全局访问点。</p>
+
+            <div class="code-block">
+<pre><code>// ✅ 好的做法 - ES6 单例
+class DatabaseConnection {
+    static instance = null;
+    static getInstance() {
+        if (!DatabaseConnection.instance) {
+            DatabaseConnection.instance = new DatabaseConnection();
+        }
+        return DatabaseConnection.instance;
+    }
+
+    constructor() {
+        if (DatabaseConnection.instance) {
+            throw new Error('DatabaseConnection is a singleton!');
+        }
+    }
+
+    connect() { /* ... */ }
+}
+
+// 使用
+const db1 = DatabaseConnection.getInstance();
+const db2 = DatabaseConnection.getInstance();
+console.log(db1 === db2); // true
+
+// ✅ 更现代的方式 - 使用模块
+class DatabaseConnection {
+    connect() { /* ... */ }
+}
+
+// 单例导出
+export default new DatabaseConnection();
+
+// ✅ 或者使用闭包
+const createSingleton = (Class) => {
+    let instance;
+    return {
+        getInstance: (...args) => {
+            if (!instance) {
+                instance = new Class(...args);
+            }
+            return instance;
+        }
+    };
+};
+
+const API = createSingleton(class APIClient {
+    fetch(url) { /* ... */ }
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>工厂模式 (Factory)</h2>
+            <p>定义一个创建对象的接口，让子类决定实例化哪个类。</p>
+
+            <div class="code-block">
+<pre><code>// ✅ 简单工厂
+class Button { render() { } }
+class Link { render() { } }
+
+class UIComponentFactory {
+    static createComponent(type) {
+        switch (type) {
+            case 'button':
+                return new Button();
+            case 'link':
+                return new Link();
+            default:
+                throw new Error(`Unknown component type: ${type}`);
+        }
+    }
+}
+
+// 使用
+const button = UIComponentFactory.createComponent('button');
+const link = UIComponentFactory.createComponent('link');
+
+// ✅ 抽象工厂
+class DarkThemeFactory {
+    createButton() { return new DarkButton(); }
+    createLink() { return new DarkLink(); }
+}
+
+class LightThemeFactory {
+    createButton() { return new LightButton(); }
+    createLink() { return new LightLink(); }
+}
+
+// 根据主题创建组件
+const factory = theme === 'dark' ? new DarkThemeFactory() : new LightThemeFactory();
+const button = factory.createButton();</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>观察者模式 (Observer)</h2>
+            <p>定义对象间的一对多依赖关系，当一个对象状态改变时，所有依赖它的对象都会收到通知。</p>
+
+            <div class="code-block">
+<pre><code>// ✅ 简单观察者
+class EventEmitter {
+    constructor() {
+        this.events = {};
+    }
+
+    on(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+        return this; // 支持链式调用
+    }
+
+    off(event, callback) {
+        if (!this.events[event]) return this;
+        this.events[event] = this.events[event].filter(cb => cb !== callback);
+        return this;
+    }
+
+    emit(event, ...args) {
+        if (!this.events[event]) return this;
+        this.events[event].forEach(callback => callback(...args));
+        return this;
+    }
+}
+
+// 使用
+const emitter = new EventEmitter();
+emitter.on('data', (data) => console.log('收到数据:', data));
+emitter.on('data', (data) => console.log('处理数据:', data));
+
+emitter.emit('data', { message: 'Hello' });
+// 输出:
+// 收到数据: { message: 'Hello' }
+// 处理数据: { message: 'Hello' }</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>发布-订阅模式 (Pub/Sub)</h2>
+            <p>类似观察者模式，但更松耦合，发布者和订阅者不直接交互。</p>
+
+            <div class="code-block">
+<pre><code>// ✅ 发布-订阅实现
+class PubSub {
+    constructor() {
+        this.events = {};
+    }
+
+    subscribe(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        const id = Date.now().toString();
+        this.events[event].push({ id, callback });
+        return () => this.unsubscribe(event, id);
+    }
+
+    unsubscribe(event, id) {
+        if (!this.events[event]) return;
+        this.events[event] = this.events[event].filter(sub => sub.id !== id);
+    }
+
+    publish(event, data) {
+        if (!this.events[event]) return;
+        this.events[event].forEach(sub => sub.callback(data));
+    }
+}
+
+// 使用
+const pubsub = new PubSub();
+
+const unsubscribe = pubsub.subscribe('user:created', (user) => {
+    console.log('用户创建:', user);
+});
+
+pubsub.publish('user:created', { name: '张三' });
+
+// 取消订阅
+unsubscribe();</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>策略模式 (Strategy)</h2>
+            <p>定义一系列算法，把它们封装起来，并使它们可以互相替换。</p>
+
+            <div class="code-block">
+<pre><code>// ✅ 策略模式 - 排序策略
+const sortStrategies = {
+    price: (a, b) => a.price - b.price,
+    name: (a, b) => a.name.localeCompare(b.name),
+    date: (a, b) => new Date(a.date) - new Date(b.date)
+};
+
+function sortProducts(products, strategy) {
+    return [...products].sort(sortStrategies[strategy]);
+}
+
+// 使用
+const products = [
+    { name: '商品A', price: 100, date: '2026-01-01' },
+    { name: '商品B', price: 200, date: '2026-01-02' }
+];
+
+const byPrice = sortProducts(products, 'price');
+const byName = sortProducts(products, 'name');
+
+// ✅ 策略模式 - 表单验证
+const validators = {
+    email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    phone: (value) => /^1[3-9]\d{9}$/.test(value),
+    required: (value) => value && value.trim() !== ''
+};
+
+function validateField(value, rules) {
+    for (const rule of rules) {
+        const validator = validators[rule.type];
+        if (!validator || !validator(value)) {
+            return { valid: false, message: rule.message };
+        }
+    }
+    return { valid: true };
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>装饰器模式 (Decorator)</h2>
+            <p>动态地给对象添加额外的职责。</p>
+
+            <div class="code-block">
+<pre><code>// ✅ 函数装饰器
+function withLogging(fn) {
+    return function(...args) {
+        console.log(`调用 ${fn.name} 参数:`, args);
+        const result = fn.apply(this, args);
+        console.log(`返回结果:`, result);
+        return result;
+    };
+}
+
+function withTiming(fn) {
+    return function(...args) {
+        const start = performance.now();
+        const result = fn.apply(this, args);
+        const end = performance.now();
+        console.log(`${fn.name} 耗时: ${(end - start).toFixed(2)}ms`);
+        return result;
+    };
+}
+
+// 使用
+const fetchData = async (url) => {
+    const response = await fetch(url);
+    return response.json();
+};
+
+const loggedFetchData = withLogging(fetchData);
+const timedFetchData = withTiming(loggedFetchData);
+
+// ✅ 类装饰器 (实验性功能)
+function logged(Class) {
+    return class extends Class {
+        method(...args) {
+            console.log(`调用 ${Class.name}.method 参数:`, args);
+            return super.method(...args);
+        }
+    };
+}
+
+// ✅ 方法装饰器
+const memoize = (target, propertyKey, descriptor) => {
+    const originalMethod = descriptor.value;
+    const cache = new Map();
+
+    descriptor.value = function(...args) {
+        const key = JSON.stringify(args);
+        if (cache.has(key)) {
+            return cache.get(key);
+        }
+        const result = originalMethod.apply(this, args);
+        cache.set(key, result);
+        return result;
+    };
+
+    return descriptor;
+};
+
+class Calculator {
+    @memoize
+    expensiveCalculation(n) {
+        console.log('计算中...');
+        return n * n * n; // 复杂计算
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>组合模式 (Composite)</h2>
+            <p>将对象组合成树形结构以表示"部分-整体"的层次结构。</p>
+
+            <div class="code-block">
+<pre><code>// ✅ 文件系统示例
+class FileSystemNode {
+    constructor(name) {
+        this.name = name;
+    }
+    print(indent = '') { }
+}
+
+class File extends FileSystemNode {
+    print(indent = '') {
+        console.log(`${indent}${this.name} (文件)`);
+    }
+}
+
+class Directory extends FileSystemNode {
+    constructor(name) {
+        super(name);
+        this.children = [];
+    }
+
+    add(node) {
+        this.children.push(node);
+    }
+
+    print(indent = '') {
+        console.log(`${indent}${this.name} (目录)`);
+        this.children.forEach(child => child.print(indent + '  '));
+    }
+}
+
+// 使用
+const root = new Directory('root');
+const home = new Directory('home');
+const user = new Directory('user');
+
+const file1 = new File('document.txt');
+const file2 = new File('photo.jpg');
+
+root.add(home);
+home.add(user);
+user.add(file1);
+user.add(file2);
+
+root.print();
+// root (目录)
+//   home (目录)
+//     user (目录)
+//       document.txt (文件)
+//       photo.jpg (文件)</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>现代代码模式</h2>
+            <h3>1. 异步模式</h3>
+            <div class="code-block">
+<pre><code>// ✅ Promise 并发
+const fetchAll = async (urls) => {
+    const results = await Promise.allSettled(
+        urls.map(url => fetch(url).then(r => r.json()))
+    );
+    return results
+        .filter(result => result.status === 'fulfilled')
+        .map(result => result.value);
+};
+
+// ✅ 异步队列
+class AsyncQueue {
+    constructor(concurrency = 1) {
+        this.concurrency = concurrency;
+        this.queue = [];
+        this.running = 0;
+    }
+
+    async run(task) {
+        return new Promise((resolve, reject) => {
+            this.queue.push({ task, resolve, reject });
+            this.process();
+        });
+    }
+
+    async process() {
+        if (this.running >= this.concurrency || this.queue.length === 0) return;
+
+        this.running++;
+        const { task, resolve, reject } = this.queue.shift();
+
+        try {
+            const result = await task();
+            resolve(result);
+        } catch (error) {
+            reject(error);
+        } finally {
+            this.running--;
+            this.process();
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h3>2. 状态管理模式</h3>
+            <div class="code-block">
+<pre><code>// ✅ 简单的 Store 实现
+class Store {
+    constructor(initialState) {
+        this.state = initialState;
+        this.listeners = new Set();
+    }
+
+    getState() {
+        return this.state;
+    }
+
+    setState(partialState) {
+        this.state = { ...this.state, ...partialState };
+        this.notify();
+    }
+
+    subscribe(listener) {
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
+    }
+
+    notify() {
+        this.listeners.forEach(listener => listener(this.state));
+    }
+}
+
+// 使用
+const store = new Store({ count: 0 });
+
+store.subscribe((state) => {
+    console.log('State changed:', state);
+});
+
+store.setState({ count: 1 });
+// State changed: { count: 1 }</code></pre>
+            </div>
+
+            <h3>3. Hook 模式 (React Hooks 灵感)</h3>
+            <div class="code-block">
+<pre><code>// ✅ 简单的 Hook 实现
+let hookIndex = 0;
+let hooks = [];
+
+function useState(initialValue) {
+    const currentIndex = hookIndex;
+
+    if (hooks[currentIndex] === undefined) {
+        hooks[currentIndex] = initialValue;
+    }
+
+    const setState = (newValue) => {
+        hooks[currentIndex] = newValue;
+        hookIndex = 0;
+        render(); // 重新渲染
+    };
+
+    hookIndex++;
+    return [hooks[currentIndex], setState];
+}
+
+function useEffect(callback, deps) {
+    const currentIndex = hookIndex;
+    const prevDeps = hooks[currentIndex];
+    const hasChanged = !prevDeps || deps.some((dep, i) => dep !== prevDeps[i]);
+
+    if (hasChanged) {
+        callback();
+        hooks[currentIndex] = deps;
+    }
+
+    hookIndex++;
+}
+
+// 使用示例
+function render() {
+    hookIndex = 0;
+    console.log('Rendering...');
+    // 组件渲染逻辑
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2026年设计模式总结</h2>
+            <ul>
+                <li>✅ **单例模式** - 管理全局状态和配置</li>
+                <li>✅ **工厂模式** - 创建复杂对象</li>
+                <li>✅ **观察者模式** - 事件系统和响应式编程</li>
+                <li>✅ **策略模式** - 可替换的算法实现</li>
+                <li>✅ **装饰器模式** - 动态添加功能</li>
+                <li>✅ **组合模式** - 树形结构处理</li>
+                <li>✅ **异步模式** - Promise 并发和队列</li>
+                <li>✅ **状态管理** - 单向数据流</li>
+                <li>✅ **Hook 模式** - 逻辑复用</li>
+            </ul>
+        </div>
+
+        <div class="navigation">
+            <a href="advanced-7-bestpractices.html" class="nav-button prev">← 上一章: 最佳实践</a>
+            <a href="../index.html" class="nav-button next">返回首页 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

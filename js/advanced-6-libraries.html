@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>常用准标准库 - JS教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+                <li><a href="libraries-bestpractices.html">下一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 进阶教程 &gt; 常用准标准库
+        </div>
+
+        <h1>常用准标准库 (2026版)</h1>
+
+        <div class="section">
+            <h2>什么是准标准库?</h2>
+            <p>准标准库是指虽然不是 JavaScript 官方标准，但在社区中被广泛使用、几乎成为事实标准的工具库和实用函数。2026年，这些库已经成为现代 JavaScript 开发不可或缺的一部分。</p>
+        </div>
+
+        <div class="section">
+            <h2>Lodash - JavaScript 实用工具库</h2>
+            <p>Lodash 是最受欢迎的 JavaScript 实用工具库，提供了模块化、高性能的工具函数。</p>
+
+            <h3>核心功能</h3>
+            <div class="code-block">
+<pre><code>// 数组操作
+import { chunk, uniq, sortBy } from 'lodash';
+
+const numbers = [1, 2, 3, 4, 5];
+console.log(chunk(numbers, 2)); // [[1,2], [3,4], [5]]
+console.log(uniq([1, 2, 2, 3])); // [1, 2, 3]
+console.log(sortBy(users, 'age')); // 按年龄排序
+
+// 对象操作
+import { get, set, merge, omit } from 'lodash';
+
+const user = { profile: { name: '张三' } };
+console.log(get(user, 'profile.name')); // '张三'
+console.log(get(user, 'profile.email', 'default@email.com')); // 默认值
+
+const newUser = set({}, 'profile.age', 25);
+const merged = merge({}, defaults, options);
+const cleaned = omit(user, ['password', 'token']);
+
+// 函数式编程
+import { debounce, throttle, memoize } from 'lodash';
+
+const debouncedSearch = debounce((query) => {
+    fetchSearchResults(query);
+}, 300);
+
+const throttledScroll = throttle(() => {
+    handleScroll();
+}, 100);
+
+const expensive = memoize((n) => {
+    return complexCalculation(n);
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Day.js - 轻量级日期库</h2>
+            <p>Day.js 是 Moment.js 的轻量级替代品，API 相似但体积只有 2KB。</p>
+
+            <div class="code-block">
+<pre><code>import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
+
+// 基本使用
+const now = dayjs();
+console.log(now.format('YYYY-MM-DD HH:mm:ss')); // '2026-01-26 15:30:00'
+
+// 操作日期
+const tomorrow = dayjs().add(1, 'day');
+const lastMonth = dayjs().subtract(1, 'month');
+
+// 相对时间
+console.log(dayjs('2026-01-01').fromNow()); // '25 days ago'
+
+// 时区处理
+const utcTime = dayjs.utc();
+const localTime = dayjs.utc().local();
+
+// 解析和格式化
+const date = dayjs('2026-01-26', 'YYYY-MM-DD');
+console.log(date.format('MMMM D, YYYY')); // 'January 26, 2026' (英文)
+console.log(date.locale('zh-cn').format('YYYY年MM月DD日')); // 中文</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>clsx / classnames - CSS 类名处理</h2>
+            <p>动态构建 CSS 类名字符串的工具库，特别适用于 React/Vue 等框架。</p>
+
+            <div class="code-block">
+<pre><code>import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+// 基本使用
+const className = clsx('foo', 'bar', 'baz');
+// 'foo bar baz'
+
+// 条件类名
+const className = clsx({
+    active: isActive,
+    disabled: isDisabled,
+    hidden: isHidden
+});
+
+// 数组和对象
+const className = clsx('base-class', {
+    'modifier-a': conditionA,
+    'modifier-b': conditionB
+}, 'another-class');
+
+// 与 Tailwind CSS 结合使用 (推荐 twMerge)
+const className = twMerge(
+    clsx('px-4 py-2', {
+        'bg-blue-500': isPrimary,
+        'bg-gray-500': !isPrimary
+    }),
+    existingClassName // 自动处理冲突
+);</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Zod - 运行时类型验证</h2>
+            <p>Zod 是 TypeScript-first 的模式声明和验证库，可以无缝集成到 TypeScript。</p>
+
+            <div class="code-block">
+<pre><code>import { z } from 'zod';
+
+// 定义模式
+const UserSchema = z.object({
+    name: z.string().min(2).max(50),
+    age: z.number().min(0).max(150),
+    email: z.string().email(),
+    role: z.enum(['admin', 'user', 'guest']),
+    preferences: z.object({
+        notifications: z.boolean(),
+        theme: z.enum(['light', 'dark', 'auto'])
+    }).optional()
+});
+
+// 推断 TypeScript 类型
+type User = z.infer<typeof UserSchema>;
+
+// 验证数据
+try {
+    const result = UserSchema.parse({
+        name: '张三',
+        age: 25,
+        email: 'test@example.com',
+        role: 'user'
+    });
+    console.log('验证成功:', result);
+} catch (error) {
+    console.error('验证失败:', error.errors);
+}
+
+// 安全解析 (不抛出异常)
+const result = UserSchema.safeParse(inputData);
+if (result.success) {
+    console.log(result.data);
+} else {
+    console.log(result.error);
+}
+
+// API 响应验证
+const APIResponseSchema = z.object({
+    success: z.boolean(),
+    data: z.array(UserSchema),
+    pagination: z.object({
+        total: z.number(),
+        page: z.number()
+    })
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Dexie.js - IndexedDB 封装</h2>
+            <p>Dexie.js 是 IndexedDB 的简洁封装，让浏览器数据库操作变得简单。</p>
+
+            <div class="code-block">
+<pre><code>import Dexie from 'dexie';
+
+// 定义数据库
+const db = new Dexie('MyDatabase');
+db.version(1).stores({
+    todos: '++id, text, completed, date',
+    users: '++id, &email, name',
+    posts: '++id, userId, title, date'
+});
+
+// 添加数据
+await db.todos.add({
+    text: '学习 JavaScript',
+    completed: false,
+    date: new Date()
+});
+
+// 查询数据
+const allTodos = await db.todos.toArray();
+const activeTodos = await db.todos
+    .where('completed')
+    .equals(false)
+    .toArray();
+
+// 分页查询
+const page = await db.todos
+    .where('date')
+    .below(new Date())
+    .reverse()
+    .offset(0)
+    .limit(10)
+    .toArray();
+
+// 更新数据
+await db.todos.update(id, { completed: true });
+
+// 删除数据
+await db.todos.delete(id);
+await db.todos.where('completed').equals(true).delete();
+
+// 批量操作
+await db.transaction('rw', db.todos, db.users, async () => {
+    await db.todos.bulkAdd(todos);
+    await db.todos.where('completed').equals(true).modify({ archived: true });
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Nanoid - 唯一 ID 生成</h2>
+            <p>Nanoid 是一个更小、更安全、更友好的唯一字符串 ID 生成器。</p>
+
+            <div class="code-block">
+<pre><code>import { nanoid } from 'nanoid';
+
+// 默认 21 字符 ID
+const id = nanoid(); // 'V1StGXR8_Z5jdHi6B-myT'
+
+// 自定义长度
+const shortId = nanoid(10); // 'IRLo-Vl1dQ'
+
+// 自定义字母表
+const customId = nanoid(12, '0123456789ABCDEF');
+
+// URL 安全
+const urlId = nanoid(); // 自动使用 URL 安全字符
+
+// 比较优势
+// UUID: '550e8400-e29b-41d4-a716-446655440000' (36 字符)
+// NanoID: 'V1StGXR8_Z5jdHi6B-myT' (21 字符)
+// 更短、更快、更安全
+
+// 使用场景
+const todoId = nanoid();
+const fileId = nanoid(16);
+const sessionToken = nanoid(32);</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Turndown - HTML 转 Markdown</h2>
+            <p>Turndown 是一个将 HTML 转换为 Markdown 的工具库。</p>
+
+            <div class="code-block">
+<pre><code>import TurndownService from 'turndown';
+
+const turndownService = new TurndownService();
+
+// 基本转换
+const markdown = turndownService.turndown(`
+    <h1>标题</h1>
+    <p>这是一段<strong>加粗</strong>文本</p>
+    <ul>
+        <li>列表项 1</li>
+        <li>列表项 2</li>
+    </ul>
+`);
+
+// 结果:
+// # 标题
+// 这是一段**加粗**文本
+// * 列表项 1
+// * 列表项 2
+
+// 自定义规则
+turndownService.addRule('strikethrough', {
+    filter: ['s', 'del'],
+    replacement: (content) => `~~${content}~~`
+});
+
+turndownService.addRule('highlight', {
+    filter: (node, options) => {
+        return node.nodeName === 'SPAN' && node.hasAttribute('data-highlight');
+    },
+    replacement: (content, node) => `==${content}==`
+});</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>DOMPurify - XSS 防护</h2>
+            <p>DOMPurify 是一个快速的、只针对 XSS 的 DOM-only 清理器。</p>
+
+            <div class="code-block">
+<pre><code>import DOMPurify from 'dompurify';
+
+// 基本使用
+const dirty = '&lt;img src=x onerror=alert(1)//&gt;';
+const clean = DOMPurify.sanitize(dirty);
+// 结果: '&lt;img src=x&gt;'
+
+// 允许特定标签
+const clean = DOMPurify.sanitize(dirty, {
+    ALLOWED_TAGS: ['p', 'b', 'i', 'u', 'strong', 'em', 'a'],
+    ALLOWED_ATTR: ['href', 'title', 'target']
+});
+
+// 清理 HTML 片段
+const cleanHTML = DOMPurify.sanitize(userInputHTML);
+
+// 使用钩子
+DOMPurify.addHook('uponSanitizeAttribute', (node, data) => {
+    // 自定义属性处理逻辑
+    if (data.attrName === 'target') {
+        data.attrValue = '_blank';
+    }
+});
+
+// 实际应用示例
+function renderUserContent(content) {
+    return DOMPurify.sanitize(content, {
+        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'a', 'ul', 'ol', 'li'],
+        ALLOWED_ATTR: ['href', 'target'],
+        ALLOW_DATA_ATTR: false
+    });
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Copy-to-clipboard - 剪贴板操作</h2>
+            <p>现代剪贴板 API 的简单封装。</p>
+
+            <div class="code-block">
+<pre><code>import { clipboard } from '@nolebase/vitepress-plugin-inline-copy-to-clipboard';
+
+// 复制文本
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        console.log('复制成功!');
+    } catch (err) {
+        console.error('复制失败:', err);
+        // 降级方案
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+    }
+}
+
+// 现代浏览器内置 API (推荐)
+async function copyText(text) {
+    await navigator.clipboard.writeText(text);
+}
+
+async function pasteText() {
+    const text = await navigator.clipboard.readText();
+    return text;
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>选择合适的库</h2>
+            <p>2026年选择库的原则:</p>
+            <ul>
+                <li><strong>优先使用浏览器原生 API</strong> - 如 URLSearchParams、Blob、File API</li>
+                <li><strong>选择轻量级库</strong> - 如 Day.js (2KB) 而不是 Moment.js (67KB)</li>
+                <li><strong>考虑 Tree-shaking</strong> - 选择支持 ES Module 的库</li>
+                <li><strong>维护活跃</strong> - 选择持续更新的库</li>
+                <li><strong>类型支持</strong> - 优先选择有 TypeScript 定义的库</li>
+                <li><strong>安全性</strong> - 特别注意用户输入处理的库</li>
+            </ul>
+        </div>
+
+        <div class="navigation">
+            <a href="../index.html" class="nav-button prev">← 返回首页</a>
+            <a href="libraries-bestpractices.html" class="nav-button next">下一章: 最佳实践 →</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+</body>
+</html>

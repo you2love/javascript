@@ -1,0 +1,381 @@
+/* 示例页面容器 */
+.example-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: white;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.example-container h1 {
+    text-align: center;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+}
+
+.example-description {
+    text-align: center;
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* 代码区域 */
+.code-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e0e0e0;
+}
+
+.code-section h2 {
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+.code-block {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 1.5rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.code-block pre {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* 计算器样式 */
+.calculator {
+    max-width: 300px;
+    margin: 2rem auto;
+    background: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.calculator .display {
+    margin-bottom: 15px;
+}
+
+.calculator .display input {
+    width: 100%;
+    padding: 15px;
+    font-size: 24px;
+    text-align: right;
+    border: none;
+    border-radius: 5px;
+    background: white;
+    box-sizing: border-box;
+}
+
+.calculator .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.calculator .btn {
+    padding: 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.calculator .btn:hover {
+    background: #e0e0e0;
+}
+
+.calculator .btn.clear {
+    background: #ff6b6b;
+    color: white;
+}
+
+.calculator .btn.equals {
+    background: #51cf66;
+    color: white;
+}
+
+/* 待办事项样式 */
+.todo-app {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.todo-app .input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.todo-app input[type="text"] {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.todo-app .add-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.todo-app .filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.todo-app .filter-btn {
+    padding: 8px 16px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #667eea;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.todo-app .filter-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.todo-app .todo-list {
+    list-style: none;
+    padding: 0;
+}
+
+.todo-app .todo-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.todo-app .todo-item.completed span {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+.todo-app .todo-item input[type="checkbox"] {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+}
+
+.todo-app .todo-item span {
+    flex: 1;
+}
+
+.todo-app .delete-btn {
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.todo-app .stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.todo-app .clear-btn {
+    padding: 8px 16px;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 时钟样式 */
+.clock-display {
+    text-align: center;
+    margin: 3rem 0;
+}
+
+.clock-display .digital-clock {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #667eea;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 1rem;
+}
+
+.clock-display .date-display {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.clock-display .controls {
+    margin-top: 2rem;
+}
+
+.clock-display .control-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px;
+}
+
+/* 轮播样式 */
+.slideshow-container {
+    position: relative;
+    max-width: 800px;
+    margin: 2rem auto;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.slide {
+    display: none;
+    animation: fade 0.5s;
+}
+
+@keyframes fade {
+    from {opacity: 0}
+    to {opacity: 1}
+}
+
+.slide-number {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    padding: 5px 10px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 5px;
+}
+
+.slide-content {
+    padding: 100px;
+    text-align: center;
+    color: white;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.slide-content p {
+    font-size: 1.2rem;
+}
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.3s;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    user-select: none;
+}
+
+.prev {
+    left: 20px;
+}
+
+.next {
+    right: 20px;
+}
+
+.prev:hover, .next:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+.dots-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.dot {
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin: 0 5px;
+    background: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.dot.active {
+    background: #667eea;
+    transform: scale(1.2);
+}
+
+.dot:hover {
+    background: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .example-container {
+        padding: 2rem 1rem;
+        margin: 1rem;
+    }
+
+    .calculator .buttons {
+        gap: 5px;
+    }
+
+    .calculator .btn {
+        padding: 15px;
+        font-size: 16px;
+    }
+
+    .clock-display .digital-clock {
+        font-size: 2.5rem;
+    }
+
+    .slide-content {
+        padding: 50px;
+        height: 300px;
+    }
+
+    .slide-content h2 {
+        font-size: 1.8rem;
+    }
+}

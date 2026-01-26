@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>待办事项 - JavaScript示例</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/examples.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 示例</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="example-container">
+        <h1>待办事项列表</h1>
+        <p class="example-description">创建、管理和完成你的任务</p>
+
+        <div class="todo-app">
+            <div class="input-section">
+                <input type="text" id="todoInput" placeholder="输入新的任务..." />
+                <button class="add-btn" id="addBtn">添加任务</button>
+            </div>
+
+            <div class="filter-section">
+                <button class="filter-btn" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="active">未完成</button>
+                <button class="filter-btn" data-filter="completed">已完成</button>
+            </div>
+
+            <ul id="todoList" class="todo-list"></ul>
+
+            <div class="stats">
+                <span id="totalCount">总任务: 0</span>
+                <span id="completedCount">已完成: 0</span>
+                <button class="clear-btn" id="clearCompleted">清除已完成</button>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h2>核心代码 (2026 现代模式)</h2>
+            <div class="code-block">
+<pre><code>// 使用类和现代 ES6+ 特性
+class TodoApp {
+    constructor() {
+        this.todos = this.loadTodos();
+        this.filter = 'all';
+        this.initializeEventListeners();
+        this.render();
+    }
+
+    loadTodos() {
+        const saved = localStorage.getItem('todos');
+        return saved ? JSON.parse(saved) : [];
+    }
+
+    addTodo(text) {
+        const todo = {
+            id: crypto.randomUUID(),
+            text,
+            completed: false,
+            createdAt: Date.now()
+        };
+        this.todos.unshift(todo);
+        this.saveTodos();
+        this.render();
+    }
+
+    toggleTodo(id) {
+        this.todos = this.todos.map(todo =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        );
+        this.saveTodos();
+        this.render();
+    }
+
+    deleteTodo(id) {
+        this.todos = this.todos.filter(todo => todo.id !== id);
+        this.saveTodos();
+        this.render();
+    }
+
+    // 使用 crypto.randomUUID() 生成唯一 ID
+    // 使用 localStorage 持久化数据
+    // 使用事件委托处理点击
+}</code></pre>
+            </div>
+        </div>
+    todos.forEach(todo => {
+        const li = document.createElement('li');
+        li.className = 'todo-item ' + (todo.completed ? 'completed' : '');
+        li.innerHTML = `
+            <input type="checkbox" ${todo.completed ? 'checked' : ''}
+                   onchange="toggleTodo(${todo.id})">
+            <span>${todo.text}</span>
+            <button class="delete-btn" onclick="deleteTodo(${todo.id})">×</button>
+        `;
+        list.appendChild(li);
+    });
+}</code></pre>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JavaScript 学习网站. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        // 现代化的 Todo List 实现
+        class TodoApp {
+            constructor() {
+                this.todos = this.loadTodos();
+                this.filter = 'all';
+                this.input = document.getElementById('todoInput');
+                this.list = document.getElementById('todoList');
+                this.filterButtons = document.querySelectorAll('.filter-btn');
+
+                this.initializeEventListeners();
+                this.render();
+            }
+
+            loadTodos() {
+                const saved = localStorage.getItem('todos');
+                return saved ? JSON.parse(saved) : [];
+            }
+
+            saveTodos() {
+                localStorage.setItem('todos', JSON.stringify(this.todos));
+            }
+
+            addTodo(text) {
+                const todo = {
+                    id: crypto.randomUUID(),
+                    text,
+                    completed: false,
+                    createdAt: Date.now()
+                };
+                this.todos.unshift(todo);
+                this.saveTodos();
+                this.render();
+            }
+
+            toggleTodo(id) {
+                this.todos = this.todos.map(todo =>
+                    todo.id === id ? { ...todo, completed: !todo.completed } : todo
+                );
+                this.saveTodos();
+                this.render();
+            }
+
+            deleteTodo(id) {
+                this.todos = this.todos.filter(todo => todo.id !== id);
+                this.saveTodos();
+                this.render();
+            }
+
+            clearCompleted() {
+                this.todos = this.todos.filter(todo => !todo.completed);
+                this.saveTodos();
+                this.render();
+            }
+
+            getFilteredTodos() {
+                switch (this.filter) {
+                    case 'active':
+                        return this.todos.filter(todo => !todo.completed);
+                    case 'completed':
+                        return this.todos.filter(todo => todo.completed);
+                    default:
+                        return this.todos;
+                }
+            }
+
+            render() {
+                const filteredTodos = this.getFilteredTodos();
+
+                // 清空列表
+                this.list.innerHTML = '';
+
+                // 渲染每个 todo
+                filteredTodos.forEach(todo => {
+                    const li = this.createTodoElement(todo);
+                    this.list.appendChild(li);
+                });
+
+                // 更新统计
+                this.updateStats();
+
+                // 更新过滤器按钮状态
+                this.filterButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.filter === this.filter);
+                });
+            }
+
+            createTodoElement(todo) {
+                const li = document.createElement('li');
+                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                li.dataset.id = todo.id;
+
+                li.innerHTML = `
+                    <input type="checkbox" ${todo.completed ? 'checked' : ''}>
+                    <span>${this.escapeHtml(todo.text)}</span>
+                    <button class="delete-btn" aria-label="删除">×</button>
+                `;
+
+                // 事件监听
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', () => this.toggleTodo(todo.id));
+
+                const deleteBtn = li.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', () => this.deleteTodo(todo.id));
+
+                return li;
+            }
+
+            updateStats() {
+                const total = this.todos.length;
+                const completed = this.todos.filter(todo => todo.completed).length;
+                document.getElementById('totalCount').textContent = `总任务: ${total}`;
+                document.getElementById('completedCount').textContent = `已完成: ${completed}`;
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            initializeEventListeners() {
+                // 添加任务按钮
+                document.querySelector('.add-btn').addEventListener('click', () => {
+                    const text = this.input.value.trim();
+                    if (text) {
+                        this.addTodo(text);
+                        this.input.value = '';
+                    }
+                });
+
+                // 回车键添加
+                this.input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const text = this.input.value.trim();
+                        if (text) {
+                            this.addTodo(text);
+                            this.input.value = '';
+                        }
+                    }
+                });
+
+                // 过滤器按钮
+                this.filterButtons.forEach(btn => {
+                    btn.dataset.filter = btn.textContent.includes('全部') ? 'all' :
+                                       btn.textContent.includes('未完成') ? 'active' : 'completed';
+                    btn.addEventListener('click', () => {
+                        this.filter = btn.dataset.filter;
+                        this.render();
+                    });
+                });
+
+                // 清除已完成按钮
+                document.querySelector('.clear-btn').addEventListener('click', () => {
+                    this.clearCompleted();
+                });
+            }
+        }
+
+        // 初始化应用
+        const app = new TodoApp();
+    </script>
+</body>
+</html>
