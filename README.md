@@ -56,6 +56,7 @@ js-tutorial/
 7. **最佳实践** - 代码质量、性能优化、安全性、测试
 8. **设计模式和代码模式** - 单例、工厂、观察者、策略、装饰器等
 9. **数据可视化与 Charts** - Chart.js、ECharts、图表类型、动态更新
+10. **ES2026 新特性** - Array.fromAsync()、Object.groupBy()、装饰器、响应式编程
 
 ### 实战示例 (5个)
 1. **计算器** - ES6 类实现，事件委托，键盘支持
@@ -150,3 +151,9 @@ MIT License
 - ✨ 使用类进行组件化开发
 - 🐛 修复示例中的安全漏洞（移除 eval）
 - 🐛 修复示例中的 XSS 漏洞
+### 2026 年最新特性
+- ES2026 提案特性介绍
+- Array.fromAsync() 和 Object.groupBy()
+- 装饰器 (Decorators) Stage 3
+- 响应式编程新范式
+- Web Components 新特性

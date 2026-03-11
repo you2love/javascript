@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES2026 新特性 - JS 教程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">返回首页</a></li>
+                <li><a href="advanced-9-charts.html">上一章</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tutorial-content">
+        <div class="breadcrumb">
+            <a href="../index.html">首页</a> &gt; 进阶教程 &gt; ES2026 新特性
+        </div>
+
+        <h1>第 10 章：ES2026 新特性</h1>
+
+        <div class="section">
+            <h2>Array.fromAsync() (ES2026)</h2>
+            <p>从异步迭代器创建数组，简化异步数据处理：</p>
+            <div class="code-block">
+<pre><code>// 从异步迭代器创建数组
+async function* asyncNumbers() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+const numbers = await Array.fromAsync(asyncNumbers());
+console.log(numbers); // [1, 2, 3]
+
+// 从 Promise 创建数组
+const promiseArray = await Array.fromAsync([
+    Promise.resolve(1),
+    Promise.resolve(2),
+    Promise.resolve(3)
+]);
+console.log(promiseArray); // [1, 2, 3]
+
+// 使用 mapFn 参数
+const doubled = await Array.fromAsync(
+    [Promise.resolve(1), Promise.resolve(2)],
+    value => value * 2
+);
+console.log(doubled); // [2, 4]
+
+// 实际应用：从 API 获取数据
+async function* fetchPages(ids) {
+    for (const id of ids) {
+        const response = await fetch(`/api/pages/${id}`);
+        yield await response.json();
+    }
+}
+
+const pages = await Array.fromAsync(fetchPages([1, 2, 3]));</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Object.groupBy() 和 Map.groupBy() (ES2026)</h2>
+            <p>根据回调函数对数组元素进行分组：</p>
+            <div class="code-block">
+<pre><code>const products = [
+    { name: '苹果', category: '水果', price: 5 },
+    { name: '香蕉', category: '水果', price: 3 },
+    { name: '胡萝卜', category: '蔬菜', price: 2 },
+    { name: '西兰花', category: '蔬菜', price: 4 },
+    { name: '牛奶', category: '饮品', price: 8 }
+];
+
+// Object.groupBy - 返回普通对象
+const grouped = Object.groupBy(products, item => item.category);
+console.log(grouped);
+// {
+//     水果：[{name: '苹果', ...}, {name: '香蕉', ...}],
+//     蔬菜：[{name: '胡萝卜', ...}, {name: '西兰花', ...}],
+//     饮品：[{name: '牛奶', ...}]
+// }
+
+// Map.groupBy - 返回 Map (支持任意键类型)
+const groupedMap = Map.groupBy(products, item => item.category);
+
+// 根据价格区间分组
+const priceGroups = Object.groupBy(products, item => {
+    if (item.price < 4) return '低价';
+    if (item.price < 6) return '中价';
+    return '高价';
+});
+// { 低价： [...], 中价： [...], 高价： [...] }
+
+// 链式调用
+const expensiveByCategory = Object.entries(
+    Object.groupBy(products, p => p.category)
+)
+    .map(([category, items]) => ({
+        category,
+        avgPrice: items.reduce((sum, i) => sum + i.price, 0) / items.length
+    }));</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>装饰器 (Decorators) - Stage 3</h2>
+            <p>装饰器提供了一种在声明时修改类和类元素的方式：</p>
+            <div class="code-block">
+<pre><code>// 类装饰器
+function logged(target) {
+    return class extends target {
+        constructor(...args) {
+            super(...args);
+            console.log(`创建 ${target.name} 实例`);
+        }
+    };
+}
+
+@logged
+class Person {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+const p = new Person('张三'); // 输出：创建 Person 实例
+
+// 方法装饰器
+function enumerable(value) {
+    return function(target, context) {
+        return {
+            ...value,
+            descriptor: {
+                ...value.descriptor,
+                enumerable: false
+            }
+        };
+    };
+}
+
+class MyClass {
+    @enumerable
+    myMethod() {
+        return 'hello';
+    }
+}
+
+// 属性装饰器
+function readonly(target, context) {
+    return {
+        get() {
+            return this.#value;
+        },
+        initializer(value) {
+            this.#value = value;
+        }
+    };
+}
+
+class Config {
+    @readonly
+    apiKey = 'secret-key';
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Promise.withResolvers() (ES2024)</h2>
+            <p>无需 executor 函数即可创建 Promise：</p>
+            <div class="code-block">
+<pre><code>// 传统方式
+let resolve, reject;
+const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+});
+
+// 新方式
+const { promise, resolve, reject } = Promise.withResolvers();
+
+// 实际应用
+function loadImage(src) {
+    const { promise, resolve, reject } = Promise.withResolvers();
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('加载失败'));
+    img.src = src;
+    return promise;
+}
+
+// 使用
+const img = await loadImage('image.jpg');</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>String.prototype.isWellFormed() 和 toWellFormed() (ES2024)</h2>
+            <p>处理 Unicode 代理对：</p>
+            <div class="code-block">
+<pre><code>// 检查字符串是否是格式良好的 UTF-16
+const str1 = 'Hello';
+const str2 = '\uD834'; // 孤立的代理项
+
+console.log(str1.isWellFormed()); // true
+console.log(str2.isWellFormed()); // false
+
+// 转换为格式良好的字符串
+const wellFormed = str2.toWellFormed();
+console.log(wellFormed); // "" (替换为 U+FFFD)</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Array.prototype.toReversed(), toSorted(), toSpliced() (ES2024)</h2>
+            <p>不可变的数组操作方法：</p>
+            <div class="code-block">
+<pre><code>const numbers = [3, 1, 4, 1, 5];
+
+// toReversed - 返回新数组，不修改原数组
+const reversed = numbers.toReversed();
+console.log(reversed); // [5, 1, 4, 1, 3]
+console.log(numbers); // [3, 1, 4, 1, 5] (未变)
+
+// toSorted - 返回排序后的新数组
+const sorted = numbers.toSorted((a, b) => a - b);
+console.log(sorted); // [1, 1, 3, 4, 5]
+console.log(numbers); // [3, 1, 4, 1, 5] (未变)
+
+// toSpliced - 返回 splice 后的新数组
+const spliced = numbers.toSpliced(1, 2, 9, 8);
+console.log(spliced); // [3, 9, 8, 1, 5]
+console.log(numbers); // [3, 1, 4, 1, 5] (未变)
+
+// with - 返回指定索引替换后的新数组
+const withReplaced = numbers.with(2, 99);
+console.log(withReplaced); // [3, 1, 99, 1, 5]
+console.log(numbers); // [3, 1, 4, 1, 5] (未变)</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>RegExp v 标志 - Unicode 属性转义 (ES2024)</h2>
+            <p>增强的 Unicode 字符类支持：</p>
+            <div class="code-block">
+<pre><code>// 使用 v 标志的 Unicode 属性转义
+const emojiRegex = /[\p{Emoji}]/v;
+console.log(emojiRegex.test('😀')); // true
+
+// 集合操作
+const letterOrDigit = /[\p{Letter}--[\p{Latin}]]/v;
+// 匹配非拉丁字母的字母
+
+// 嵌套字符类
+const complex = /[[\p{Emoji}&&\p{Smiley}]--😀]/v;
+// 匹配表情符号中的笑脸，但不包括😀</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Hashbang 语法 (ES2023)</h2>
+            <p>支持在 JavaScript 文件开头添加 shebang：</p>
+            <div class="code-block">
+<pre><code>#!/usr/bin/env node
+// 现在可以在 JS 文件中使用 shebang
+
+console.log('这是一个可执行的 Node.js 脚本');</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Object.hasOwn() (ES2022)</h2>
+            <p>更安全的属性检查方法：</p>
+            <div class="code-block">
+<pre><code>const obj = { foo: 1 };
+
+// 传统方式
+console.log('foo' in obj); // true
+console.log(obj.hasOwnProperty('foo')); // true
+console.log(obj.hasOwnProperty('toString')); // true (原型链上的)
+
+// 新方式 - 只检查自身属性
+console.log(Object.hasOwn(obj, 'foo')); // true
+console.log(Object.hasOwn(obj, 'toString')); // false
+
+// 处理 hasOwnProperty 被覆盖的情况
+const obj2 = {
+    foo: 1,
+    hasOwnProperty: () => false
+};
+console.log(obj2.hasOwnProperty('foo')); // false (被覆盖)
+console.log(Object.hasOwn(obj2, 'foo')); // true (正确)</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Array.prototype.at() (ES2022)</h2>
+            <p>支持负索引的数组访问：</p>
+            <div class="code-block">
+<pre><code>const arr = ['a', 'b', 'c', 'd', 'e'];
+
+// 传统方式获取最后一个元素
+console.log(arr[arr.length - 1]); // 'e'
+
+// 新方式
+console.log(arr.at(-1)); // 'e'
+console.log(arr.at(-2)); // 'd'
+console.log(arr.at(0)); // 'a'
+
+// 字符串也支持 at()
+const str = 'hello';
+console.log(str.at(-1)); // 'o'</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Top-level await (ES2022)</h2>
+            <p>在模块顶层直接使用 await：</p>
+            <div class="code-block">
+<pre><code>// 在 ES 模块中可以直接使用 await
+const data = await fetch('/api/data').then(r => r.json());
+
+// 动态导入
+const module = await import('./module.js');
+
+// 条件加载
+const i18n = await import(`./i18n/${navigator.language}.js`);
+
+// 注意：只能在 ES 模块中使用
+// HTML 中需要使用 type="module"
+// &lt;script type="module" src="app.js"&gt;&lt;/script&gt;</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>响应式编程新范式</h2>
+            <p>2026 年流行的响应式模式：</p>
+            <div class="code-block">
+<pre><code>// 使用 Signals (现代响应式原语)
+class Signal {
+    #value;
+    #listeners = new Set();
+
+    constructor(initialValue) {
+        this.#value = initialValue;
+    }
+
+    get() {
+        return this.#value;
+    }
+
+    set(newValue) {
+        this.#value = newValue;
+        this.#listeners.forEach(fn => fn(newValue));
+    }
+
+    subscribe(fn) {
+        this.#listeners.add(fn);
+        return () => this.#listeners.delete(fn);
+    }
+}
+
+// 使用
+const count = new Signal(0);
+count.subscribe(v => console.log('新值:', v));
+count.set(1); // 输出：新值：1
+
+// 计算信号
+const double = new Signal(0);
+count.subscribe(v => double.set(v * 2));</code></pre>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="advanced-9-charts.html" class="nav-button prev">← 上一章：数据可视化</a>
+            <a href="../index.html" class="nav-button next">返回首页 →</a>
+        </div>
+    </main>
+
+</body>
+</html>
