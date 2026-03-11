@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后端开发者 JavaScript 学习指南</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tutorial.css">
+    <style>
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .guide-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        .guide-header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        .guide-header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        .guide-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .guide-section h2 {
+            color: #3498db;
+            font-size: 1.6em;
+            margin-top: 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .guide-section h3 {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-top: 25px;
+        }
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .concept-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .concept-card h4 {
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+        .concept-card code {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ecf0f1;
+        }
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .code-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        .code-block .comment { color: #5c6370; }
+        .code-block .keyword { color: #c678dd; }
+        .code-block .string { color: #98c379; }
+        .code-block .function { color: #61afef; }
+        .code-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        .code-label.bad { color: #e74c3c; }
+        .code-label.good { color: #27ae60; }
+        .tip-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .tip-box.warning {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .tip-box.info {
+            background: #d1ecf1;
+            border-left-color: #17a2b8;
+        }
+        .tip-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #856404;
+        }
+        .warning .tip-title { color: #721c24; }
+        .info .tip-title { color: #0c5460; }
+        .event-loop-diagram {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .roadmap-table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .roadmap-table td {
+            padding: 12px 15px;
+            border: 1px solid #ecf0f1;
+        }
+        .roadmap-table tr:first-child td {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        .roadmap-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .resource-list {
+            list-style: none;
+            padding: 0;
+        }
+        .resource-list li {
+            padding: 12px 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        .resource-list li strong {
+            color: #2c3e50;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .code-compare {
+                grid-template-columns: 1fr;
+            }
+            .concept-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>JS 教程</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="../index.html#basics">基础教程</a></li>
+                <li><a href="../index.html#advanced">进阶教程</a></li>
+                <li><a href="../index.html#examples">实战示例</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="guide-container">
+            <a href="../index.html" class="back-link">← 返回首页</a>
+            
+            <div class="guide-header">
+                <h1>🚀 后端开发者 JavaScript 学习指南</h1>
+                <p>从后端视角快速掌握 JavaScript 核心概念和思维差异</p>
+            </div>
+
+            <section class="guide-section">
+                <h2>一、思维转变</h2>
+                
+                <h3>1. 单线程异步模型</h3>
+                <p>后端熟悉的可能是多线程/多进程模型，但 JS 是<strong>单线程事件驱动</strong>：</p>
+                <div class="code-compare">
+                    <div>
+                        <div class="code-label bad">后端阻塞思维</div>
+                        <div class="code-block"><pre><span class="comment">// 线程阻塞等待</span>
+result = db.query(sql);
+process(result);</pre></div>
+                    </div>
+                    <div>
+                        <div class="code-label good">JS 异步思维</div>
+                        <div class="code-block"><pre><span class="comment">// 回调方式</span>
+db.query(sql, (err, result) => {
+    process(result);
+});
+
+<span class="comment">// async/await（推荐）</span>
+<span class="keyword">const</span> <span class="function">result</span> = <span class="keyword">await</span> db.query(sql);
+process(result);</pre></div>
+                    </div>
+                </div>
+
+                <h3>2. 原型链 vs 类</h3>
+                <div class="code-block" style="margin: 15px 0;">
+                    <pre><span class="comment">// 看起来像类（ES6 语法糖）</span>
+<span class="keyword">class</span> <span class="function">User</span> {
+    <span class="function">constructor</span>(name) {
+        <span class="keyword">this</span>.name = name;
+    }
+}
+
+<span class="comment">// JS 本质是原型链</span>
+<span class="comment">// User.prototype 是所有实例共享的原型</span></pre>
+                </div>
+
+                <h3>3. 弱类型 vs 强类型</h3>
+                <div class="tip-box warning">
+                    <div class="tip-title">⚠️ 注意</div>
+                    <p>JavaScript 是动态类型，运行时才检查类型错误。TypeScript 可以解决这个问题。</p>
+                </div>
+                <div class="code-block" style="margin: 15px 0;">
+                    <pre><span class="keyword">let</span> x = <span class="string">1</span>;
+x = <span class="string">"string"</span>;  <span class="comment">// 合法</span>
+
+<span class="comment">// TypeScript 中会报错</span>
+<span class="keyword">let</span> x: <span class="function">number</span> = <span class="string">1</span>;
+x = <span class="string">"string"</span>;  <span class="comment">// 编译错误</span></pre>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <h2>二、核心概念速通</h2>
+                
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>📦 闭包（Closure）</h4>
+                        <p>函数记住并访问其词法作用域的能力，类似后端的闭包对象。</p>
+                        <code>function createCounter() { let count = 0; return { increment: () => ++count }; }</code>
+                    </div>
+                    <div class="concept-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h4>🎯 this 绑定</h4>
+                        <p>箭头函数词法绑定，普通函数动态绑定。</p>
+                        <code>getValue: () => this.value vs getValue() { return this.value; }</code>
+                    </div>
+                    <div class="concept-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <h4>🔓 解构与展开</h4>
+                        <p>类似后端的 destructuring 和 spread 操作。</p>
+                        <code>const { name, age } = user; const merged = { ...obj1, ...obj2 };</code>
+                    </div>
+                    <div class="concept-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <h4>🔄 数组高阶函数</h4>
+                        <p>函数式编程风格，链式调用。</p>
+                        <code>users.filter(u => u.active).map(u => u.name)</code>
+                    </div>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <h2>三、异步编程演进</h2>
+                
+                <div class="tip-box">
+                    <div class="tip-title">💡 演进历程</div>
+                    <p>回调 → Promise → async/await</p>
+                </div>
+
+                <div class="code-compare">
+                    <div>
+                        <div class="code-label bad">1. 回调地狱（避免）</div>
+                        <div class="code-block"><pre><span class="function">getData</span>((a) => {
+    <span class="function">getMoreData</span>(a, (b) => {
+        <span class="function">getEvenMoreData</span>(b, (c) => {
+            <span class="comment">// ...</span>
+        });
+    });
+});</pre></div>
+                    </div>
+                    <div>
+                        <div class="code-label good">2. Promise 链式</div>
+                        <div class="code-block"><pre><span class="function">getData</span>()
+    .then(a => <span class="function">getMoreData</span>(a))
+    .then(b => <span class="function">getEvenMoreData</span>(b));</pre></div>
+                    </div>
+                </div>
+                
+                <div class="code-block" style="margin: 15px 0;">
+                    <pre><span class="comment">// 3. async/await（推荐，类似同步代码）</span>
+<span class="keyword">try</span> {
+    <span class="keyword">const</span> a = <span class="keyword">await</span> <span class="function">getData</span>();
+    <span class="keyword">const</span> b = <span class="keyword">await</span> <span class="function">getMoreData</span>(a);
+    <span class="keyword">const</span> c = <span class="keyword">await</span> <span class="function">getEvenMoreData</span>(b);
+} <span class="keyword">catch</span> (e) {
+    <span class="comment">// 错误处理</span>
+}
+
+<span class="comment">// 4. Promise.all（并发）</span>
+<span class="keyword">const</span> [users, posts] = <span class="keyword">await</span> Promise.all([
+    <span class="function">fetchUsers</span>(),
+    <span class="function">fetchPosts</span>()
+]);</pre>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <h2>四、Node.js 后端开发要点</h2>
+                
+                <h3>1. 模块系统</h3>
+                <div class="code-compare">
+                    <div>
+                        <div class="code-label good">ES Module（推荐）</div>
+                        <div class="code-block"><pre><span class="keyword">import</span> express <span class="keyword">from</span> 'express';
+<span class="keyword">export const</span> <span class="function">handler</span> = (req, res) => {};</pre></div>
+                    </div>
+                    <div>
+                        <div class="code-label">CommonJS（旧）</div>
+                        <div class="code-block"><pre><span class="keyword">const</span> express = <span class="function">require</span>('express');
+module.exports.handler = (req, res) => {};</pre></div>
+                    </div>
+                </div>
+
+                <h3>2. Event Loop</h3>
+                <div class="event-loop-diagram">
+   ┌───────────────────────────┐
+┌─>│           timers          │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │     pending callbacks     │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │       poll (I/O)          │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │           check           │
+│  └─────────────┬─────────────┘
+└──│      close callbacks      │
+   └───────────────────────────┘
+                </div>
+
+                <h3>3. Stream 流处理</h3>
+                <div class="code-block" style="margin: 15px 0;">
+                    <pre><span class="comment">// 类似后端的流式处理</span>
+readStream
+    .pipe(transformStream)
+    .pipe(writeStream);</pre>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <h2>五、TypeScript 必备</h2>
+                
+                <div class="code-block" style="margin: 15px 0;">
+                    <pre><span class="comment">// 1. 接口定义</span>
+<span class="keyword">interface</span> User {
+    id: <span class="function">number</span>;
+    name: <span class="function">string</span>;
+    email?: <span class="function">string</span>;  <span class="comment">// 可选</span>
+}
+
+<span class="comment">// 2. 泛型</span>
+<span class="keyword">function</span> <span class="function">identity</span>&lt;T&gt;(arg: T): T {
+    <span class="keyword">return</span> arg;
+}
+
+<span class="comment">// 3. 类型守卫</span>
+<span class="keyword">function</span> <span class="function">isString</span>(value: unknown): value is <span class="function">string</span> {
+    <span class="keyword">return</span> <span class="keyword">typeof</span> value === <span class="string">'string'</span>;
+}
+
+<span class="comment">// 4. 工具类型</span>
+<span class="keyword">type</span> PartialUser = Partial&lt;User&gt;;
+<span class="keyword">type</span> ReadOnlyUser = Readonly&lt;User&gt;;
+<span class="keyword">type</span> UserId = Pick&lt;User, 'id'&gt;;</pre>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <h2>六、学习路径建议</h2>
+                
+                <table class="roadmap-table">
+                    <tr>
+                        <td>阶段</td>
+                        <td>内容</td>
+                        <td>时间</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>语法基础（变量、函数、数据类型）</td>
+                        <td>1-2 天</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>异步编程（Promise、async/await）</td>
+                        <td>2-3 天</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Node.js 基础 + Express</td>
+                        <td>3-5 天</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>TypeScript 入门</td>
+                        <td>2-3 天</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>实战项目</td>
+                        <td>1-2 周</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section class="guide-section">
+                <h2>七、常见坑</h2>
+                
+                <div class="tip-box warning">
+                    <div class="tip-title">⚠️ 变量提升</div>
+                    <div class="code-block" style="margin: 10px 0;"><pre><span class="function">console.log</span>(x);  <span class="comment">// undefined，不是报错</span>
+<span class="keyword">var</span> x = <span class="string">1</span>;</pre></div>
+                </div>
+
+                <div class="tip-box warning">
+                    <div class="tip-title">⚠️ 相等比较</div>
+                    <div class="code-block" style="margin: 10px 0;"><pre>[] == []   <span class="comment">// false（引用比较）</span>
+[] === []  <span class="comment">// false</span>
+'' == 0    <span class="comment">// true（类型转换）</span></pre></div>
+                </div>
+
+                <div class="tip-box info">
+                    <div class="tip-title">ℹ️ 事件循环顺序</div>
+                    <div class="code-block" style="margin: 10px 0;"><pre><span class="function">console.log</span>('1');
+<span class="function">setTimeout</span>(() => <span class="function">console.log</span>('2'), 0);
+Promise.resolve().then(() => <span class="function">console.log</span>('3'));
+<span class="function">console.log</span>('4');
+<span class="comment">// 输出：1, 4, 3, 2（微任务优先）</span></pre></div>
+                </div>
+            </section>
+
+            <section class="guide-section">
+                <h2>八、推荐资源</h2>
+                
+                <ul class="resource-list">
+                    <li><strong>MDN Web Docs</strong> - 官方文档，最权威的参考</li>
+                    <li><strong>JavaScript 高级程序设计（第 4 版）</strong> - 经典书籍，系统学习</li>
+                    <li><strong>You Don't Know JS</strong> - 深入理解 JS 本质</li>
+                    <li><strong>Node.js 设计模式</strong> - 后端开发参考</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
